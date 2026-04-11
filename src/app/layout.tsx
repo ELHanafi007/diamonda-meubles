@@ -5,7 +5,6 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
 import ConciergeModal from "@/components/ConciergeModal";
 import Footer from "@/components/Footer";
-import CustomCursor from "@/components/CustomCursor";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({
@@ -38,7 +37,6 @@ export default function RootLayout({
         )}
       >
         <div className="noise-overlay" />
-        <CustomCursor />
         <Navbar />
         <ConciergeModal />
         <SmoothScroll>
