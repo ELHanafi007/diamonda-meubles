@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { name: "Accueil", href: "/" },
-  { name: "Salons", href: "/category/salons" },
-  { name: "Chambres", href: "/category/chambres" },
-  { name: "Salles à Manger", href: "/category/salles-a-manger" },
-  { name: "Décoration", href: "/category/decoration" },
+  { name: "Collections", href: "/shop" },
+  { name: "L'Atelier", href: "/#atelier" },
+  { name: "Showroom", href: "/#showroom" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {

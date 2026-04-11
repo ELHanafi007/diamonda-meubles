@@ -6,6 +6,9 @@ import FeaturedProducts from "@/components/FeaturedProducts";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import TextReveal from "@/components/TextReveal";
+import Atelier from "@/components/Atelier";
+import Showroom from "@/components/Showroom";
+import Newsletter from "@/components/Newsletter";
 
 export default function Home() {
   const philosophyRef = useRef(null);
@@ -22,7 +25,7 @@ export default function Home() {
       <Categories />
       
       {/* Philosophy Section - Editorial Style */}
-      <section ref={philosophyRef} className="py-24 md:py-48 bg-[#FAF9F6] px-6 overflow-hidden">
+      <section id="philosophy" ref={philosophyRef} className="py-24 md:py-48 bg-[#FAF9F6] px-6 overflow-hidden">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-center">
             <motion.div 
@@ -95,8 +98,16 @@ export default function Home() {
         </div>
       </section>
 
+      <div id="atelier">
+        <Atelier />
+      </div>
+
       <FeaturedProducts />
       
+      <div id="showroom">
+        <Showroom />
+      </div>
+
       {/* Testimonials - Refined Minimalist */}
       <section className="py-32 md:py-48 bg-white px-6">
         <div className="container mx-auto text-center max-w-5xl">
@@ -108,7 +119,7 @@ export default function Home() {
           >
             <span className="text-gold text-6xl md:text-8xl font-serif mb-12 block opacity-30">“</span>
             <p className="text-2xl md:text-5xl font-serif italic leading-[1.3] text-primary/90 mb-16 tracking-tight">
-              « Le luxe n'est pas une question de prix, mais de sentiment. Diamond Meubles a transformé notre maison en un sanctuaire d'élégance absolue. »
+              « Le luxe n'est pas une question de prix, mais de sentiment. Diamond Meubles ha transformé notre maison en un sanctuaire d'élégance absolue. »
             </p>
             <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-[1px] bg-gold" />
@@ -118,8 +129,10 @@ export default function Home() {
         </div>
       </section>
 
+      <Newsletter />
+
       {/* CTA Section - Impactful Final Note */}
-      <section className="relative py-32 md:py-60 bg-black text-white px-6 overflow-hidden">
+      <section id="contact" className="relative py-32 md:py-60 bg-black text-white px-6 overflow-hidden">
         {/* Animated Background Element */}
         <motion.div 
           animate={{ 
