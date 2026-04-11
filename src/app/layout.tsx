@@ -5,6 +5,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
 import ConciergeModal from "@/components/ConciergeModal";
 import Footer from "@/components/Footer";
+import CustomCursor from "@/components/CustomCursor";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({
@@ -31,11 +32,13 @@ export default function RootLayout({
     <html lang="fr" className="scroll-smooth">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased selection:bg-gold/30",
+          "min-h-screen bg-background font-sans antialiased selection:bg-gold/30 relative",
           inter.variable,
           playfair.variable
         )}
       >
+        <div className="noise-overlay" />
+        <CustomCursor />
         <Navbar />
         <ConciergeModal />
         <SmoothScroll>

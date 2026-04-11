@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Plus, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import TextReveal from "./TextReveal";
 
 interface ProductCardProps {
   id: string;
@@ -23,7 +24,11 @@ export function ProductCard({ id, name, price, image, category, className }: Pro
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className={cn("group flex flex-col h-full", className)}
     >
-      <Link href={`/product/${id}`} className="block relative aspect-[3/4] overflow-hidden bg-beige mb-8">
+      <Link 
+        href={`/product/${id}`} 
+        data-cursor="PLUS"
+        className="block relative aspect-[3/4] overflow-hidden bg-beige mb-8"
+      >
         {/* Subtle Image Zoom */}
         <motion.img
           whileHover={{ scale: 1.08 }}
@@ -107,17 +112,16 @@ export default function FeaturedProducts() {
             >
               Édition Limitée
             </motion.span>
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl md:text-6xl font-serif leading-none"
-            >
-              Pièces <span className="italic">Maîtresses</span>
-            </motion.h2>
+            <TextReveal 
+              text="Pièces Maîtresses" 
+              className="text-4xl md:text-6xl font-serif leading-none text-primary"
+            />
           </div>
-          <Link href="/shop" className="group flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] font-bold pb-2 transition-all duration-300">
+          <Link 
+            href="/shop" 
+            data-cursor="TOUT"
+            className="group flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] font-bold pb-2 transition-all duration-300"
+          >
             Voir la Collection
             <div className="relative overflow-hidden w-8 h-[1px] bg-primary group-hover:bg-gold transition-colors">
               <motion.div 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import TextReveal from "./TextReveal";
 
 export default function Hero() {
   return (
@@ -14,7 +14,7 @@ export default function Hero() {
         className="absolute inset-0 z-0"
       >
         <div 
-          className="absolute inset-0 bg-black/35 z-10" 
+          className="absolute inset-0 bg-black/40 z-10" 
           aria-hidden="true"
         />
         <img
@@ -26,46 +26,65 @@ export default function Hero() {
 
       {/* Hero Content */}
       <div className="relative z-20 text-center px-6 max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="space-y-6 md:space-y-10"
-        >
-          <span className="text-white/80 uppercase tracking-[0.5em] text-[10px] md:text-xs font-medium block">
+        <div className="space-y-6 md:space-y-10">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="text-white/80 uppercase tracking-[0.5em] text-[10px] md:text-xs font-medium block"
+          >
             L'Excellence du Mobilier Marocain
-          </span>
+          </motion.span>
           
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl text-white font-serif leading-[1.1] md:leading-[1.05] tracking-tight">
-            L'Élégance <br />
-            <span className="italic font-extralight text-white/95">Redéfinie</span>
-          </h1>
+          <div className="flex flex-col items-center">
+            <TextReveal 
+              text="L'Élégance" 
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl text-white font-serif leading-none tracking-tight"
+              delay={0.5}
+            />
+            <TextReveal 
+              text="Redéfinie" 
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl text-gold/90 font-serif italic font-extralight leading-none tracking-tight"
+              delay={1}
+            />
+          </div>
 
-          <p className="text-white/70 text-xs md:text-sm uppercase tracking-[0.3em] font-light max-w-md mx-auto leading-relaxed hidden sm:block">
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5, delay: 2 }}
+            className="text-white/70 text-xs md:text-sm uppercase tracking-[0.3em] font-light max-w-md mx-auto leading-relaxed hidden sm:block"
+          >
             Créateur d'espaces d'exception et de moments inoubliables.
-          </p>
+          </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1, delay: 2.5, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8 pt-8"
           >
-            <button className="w-full sm:w-auto bg-white text-primary px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold hover:text-white transition-all duration-700 ease-in-out shadow-xl">
+            <button 
+              data-cursor="DÉCOUVRIR"
+              className="w-full sm:w-auto bg-white text-primary px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold hover:text-white transition-all duration-700 ease-in-out shadow-xl"
+            >
               La Collection
             </button>
-            <button className="w-full sm:w-auto border border-white/40 text-white px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-white hover:text-primary transition-all duration-700 ease-in-out backdrop-blur-sm">
+            <button 
+              data-cursor="EXPLORER"
+              className="w-full sm:w-auto border border-white/40 text-white px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-white hover:text-primary transition-all duration-700 ease-in-out backdrop-blur-sm"
+            >
               Nos Ambiances
             </button>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Elegant Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, delay: 2.5 }}
+        transition={{ duration: 1.5, delay: 3 }}
         className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 text-white flex flex-col items-center gap-4"
       >
         <div className="h-16 w-[1px] bg-gradient-to-b from-white/0 via-white/50 to-white/0 relative overflow-hidden">
@@ -75,7 +94,7 @@ export default function Hero() {
             className="absolute top-0 left-0 w-full h-1/2 bg-white"
           />
         </div>
-        <span className="text-[9px] uppercase tracking-[0.4em] opacity-50 font-medium">Découvrir</span>
+        <span className="text-[9px] uppercase tracking-[0.4em] opacity-50 font-medium">Scroll</span>
       </motion.div>
     </section>
   );

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import TextReveal from "./TextReveal";
 
 const categories = [
   {
@@ -49,21 +50,16 @@ export default function Categories() {
             >
               L'Art du Design
             </motion.span>
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl md:text-6xl font-serif leading-tight"
-            >
-              Inspiration par <span className="italic">Pièce</span>
-            </motion.h2>
+            <TextReveal 
+              text="Inspiration par Pièce" 
+              className="text-4xl md:text-6xl font-serif leading-tight text-primary"
+            />
           </div>
           <motion.p 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.8 }}
             className="text-muted-foreground text-xs md:text-sm uppercase tracking-widest max-w-xs leading-relaxed"
           >
             Chaque espace est une page blanche que nous sublimons avec élégance.
@@ -82,6 +78,7 @@ export default function Categories() {
             >
               <Link
                 href={cat.href}
+                data-cursor="VOIR"
                 className="block w-full h-full"
               >
                 <motion.div
@@ -96,9 +93,9 @@ export default function Categories() {
                   />
                 </motion.div>
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700 z-10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700 z-10 pointer-events-none" />
                 
-                <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 z-20 text-white">
+                <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 z-20 text-white pointer-events-none">
                   <motion.p 
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
