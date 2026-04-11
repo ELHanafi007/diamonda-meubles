@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import TextReveal from "./TextReveal";
+import Link from "next/link";
 
 export default function Atelier() {
   return (
@@ -60,14 +61,14 @@ export default function Atelier() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 1 }}
               >
-                <button 
-                  data-cursor="DÉCOUVREZ"
-                  className="group relative border border-primary text-primary px-12 py-6 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-500"
+                <Link 
+                  href="/about"
+                  className="group relative inline-block border border-primary text-primary px-12 py-6 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-500"
                 >
                   <span className="relative z-10">Explorer l'Atelier</span>
                   <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
                   <span className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">Explorer l'Atelier</span>
-                </button>
+                </Link>
               </motion.div>
             </div>
           </div>

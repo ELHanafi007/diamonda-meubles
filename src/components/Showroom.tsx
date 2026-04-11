@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import TextReveal from "./TextReveal";
 import { MapPin, Clock, Phone } from "lucide-react";
+import Link from "next/link";
 
 export default function Showroom() {
   return (
@@ -58,7 +59,6 @@ export default function Showroom() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-12 left-12 flex items-center gap-6">
                  <button 
-                  data-cursor="VISITE"
                   className="bg-white text-black px-10 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold hover:text-white transition-all duration-500"
                  >
                    Visite Virtuelle
@@ -108,9 +108,12 @@ export default function Showroom() {
               viewport={{ once: true }}
               className="pt-8 border-t border-white/10"
             >
-              <button className="text-gold text-[10px] uppercase tracking-[0.4em] font-bold hover:text-white transition-colors flex items-center gap-4">
-                Prendre Rendez-vous <ArrowRight size={14} />
-              </button>
+              <Link 
+                href="/contact"
+                className="text-gold text-[10px] uppercase tracking-[0.4em] font-bold hover:text-white transition-colors flex items-center gap-4 group"
+              >
+                Prendre Rendez-vous <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform duration-300" />
+              </Link>
             </motion.div>
           </div>
         </div>

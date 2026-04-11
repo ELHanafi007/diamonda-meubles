@@ -9,6 +9,7 @@ import TextReveal from "@/components/TextReveal";
 import Atelier from "@/components/Atelier";
 import Showroom from "@/components/Showroom";
 import Newsletter from "@/components/Newsletter";
+import Link from "next/link";
 
 export default function Home() {
   const philosophyRef = useRef(null);
@@ -85,13 +86,13 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 1 }}
                 className="pt-6"
               >
-                <button 
-                  data-cursor="LIRE"
-                  className="group relative bg-black text-white px-12 py-6 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
+                <Link 
+                  href="/about"
+                  className="group relative inline-block bg-black text-white px-12 py-6 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
                 >
                   <span className="relative z-10">Découvrir Notre Histoire</span>
                   <div className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-                </button>
+                </Link>
               </motion.div>
             </div>
           </div>
@@ -119,7 +120,7 @@ export default function Home() {
           >
             <span className="text-gold text-6xl md:text-8xl font-serif mb-12 block opacity-30">“</span>
             <p className="text-2xl md:text-5xl font-serif italic leading-[1.3] text-primary/90 mb-16 tracking-tight">
-              « Le luxe n'est pas une question de prix, mais de sentiment. Diamond Meubles ha transformé notre maison en un sanctuaire d'élégance absolue. »
+              « Le luxe n'est pas une question de prix, mais de sentiment. Diamond Meubles a transformé notre maison en un sanctuaire d'élégance absolue. »
             </p>
             <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-[1px] bg-gold" />
@@ -177,14 +178,14 @@ export default function Home() {
               transition={{ delay: 1.5 }}
               className="pt-8"
             >
-              <button 
-                data-cursor="GO"
-                className="group relative border border-white/30 text-white px-16 py-7 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-700 hover:border-white"
+              <Link 
+                href="/contact"
+                className="group relative inline-block border border-white/30 text-white px-16 py-7 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-700 hover:border-white"
               >
                 <span className="relative z-10">Prendre rendez-vous</span>
                 <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-out" />
                 <span className="absolute inset-0 flex items-center justify-center text-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-20 font-bold uppercase tracking-[0.3em] text-[10px]">Prendre rendez-vous</span>
-              </button>
+              </Link>
             </motion.div>
           </div>
         </div>

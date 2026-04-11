@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import TextReveal from "./TextReveal";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -64,18 +65,18 @@ export default function Hero() {
             transition={{ duration: 1, delay: 2.5, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8 pt-8"
           >
-            <button 
-              data-cursor="DÉCOUVRIR"
-              className="w-full sm:w-auto bg-white text-primary px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold hover:text-white transition-all duration-700 ease-in-out shadow-xl"
+            <Link 
+              href="/shop"
+              className="w-full sm:w-auto bg-white text-primary px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold hover:text-white transition-all duration-700 ease-in-out shadow-xl text-center"
             >
               La Collection
-            </button>
-            <button 
-              data-cursor="EXPLORER"
-              className="w-full sm:w-auto border border-white/40 text-white px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-white hover:text-primary transition-all duration-700 ease-in-out backdrop-blur-sm"
+            </Link>
+            <Link 
+              href="/#philosophy"
+              className="w-full sm:w-auto border border-white/40 text-white px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-white hover:text-primary transition-all duration-700 ease-in-out backdrop-blur-sm text-center"
             >
               Nos Ambiances
-            </button>
+            </Link>
           </motion.div>
         </div>
       </div>
