@@ -41,7 +41,7 @@ export default function Atelier() {
                 className="space-y-8"
               >
                 <p className="text-muted-foreground leading-relaxed text-lg md:text-xl font-light">
-                  Chaque pièce Diamond Meubles naît d'un dialogue entre la matière et la main de l'homme. Dans notre atelier, les traditions séculaires rencontrent l'innovation contemporaine pour créer l'exceptionnel.
+                  Chaque pièce Diamontaris Meubles naît d'un dialogue entre la matière et la main de l'homme. Dans notre atelier, les traditions séculaires rencontrent l'innovation contemporaine pour créer l'exceptionnel.
                 </p>
                 <div className="grid grid-cols-2 gap-8 py-8 border-y border-beige">
                   <div className="space-y-2">
@@ -80,11 +80,11 @@ export default function Atelier() {
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                className="aspect-[3/4] overflow-hidden"
+                className="aspect-[3/4] overflow-hidden shadow-2xl"
               >
                 <img 
                   src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800" 
-                  alt="Craftsmanship" 
+                  alt="Artisanat" 
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-105 hover:scale-100"
                 />
               </motion.div>
@@ -93,11 +93,11 @@ export default function Atelier() {
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="aspect-[3/4] overflow-hidden mt-12 md:mt-24"
+                className="aspect-[3/4] overflow-hidden mt-12 md:mt-24 shadow-2xl"
               >
                 <img 
                   src="https://images.unsplash.com/photo-1541534401786-227767794823?q=80&w=800" 
-                  alt="Materials" 
+                  alt="Matières" 
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-105 hover:scale-100"
                 />
               </motion.div>

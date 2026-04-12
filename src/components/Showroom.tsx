@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import TextReveal from "./TextReveal";
-import { MapPin, Clock, Phone } from "lucide-react";
+import { MapPin, Clock, Phone, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function Showroom() {
@@ -21,11 +21,11 @@ export default function Showroom() {
             </motion.span>
             <div className="flex flex-col">
               <TextReveal 
-                text="Notre Flagship" 
+                text="Notre Showroom" 
                 className="text-4xl md:text-7xl font-serif leading-none tracking-tight text-white"
               />
               <TextReveal 
-                text="à Casablanca." 
+                text="à Rabat." 
                 className="text-4xl md:text-7xl font-serif italic text-gold/80 leading-none tracking-tight"
                 delay={0.5}
               />
@@ -38,7 +38,7 @@ export default function Showroom() {
             transition={{ delay: 0.8 }}
             className="text-white/40 text-[10px] md:text-xs uppercase tracking-[0.3em] max-w-xs leading-relaxed"
           >
-            Un espace de 800m² dédié à l'art de vivre et au design d'exception.
+            Un espace dédié à l'art de vivre et au design d'exception au cœur de la capitale.
           </motion.p>
         </div>
 
@@ -49,20 +49,21 @@ export default function Showroom() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              className="relative aspect-video overflow-hidden group"
+              className="relative aspect-video overflow-hidden group shadow-2xl"
             >
               <img 
                 src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200" 
-                alt="Diamond Meubles Showroom" 
+                alt="Diamontaris Meubles Showroom" 
                 className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-12 left-12 flex items-center gap-6">
-                 <button 
+                 <Link 
+                  href="/contact"
                   className="bg-white text-black px-10 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold hover:text-white transition-all duration-500"
                  >
-                   Visite Virtuelle
-                 </button>
+                   Planifier une visite
+                 </Link>
               </div>
             </motion.div>
           </div>
@@ -72,10 +73,10 @@ export default function Showroom() {
               <div className="flex gap-6 items-start">
                 <MapPin className="text-gold shrink-0 mt-1" size={20} />
                 <div className="space-y-2">
-                  <h4 className="text-xs uppercase tracking-widest font-bold">Adresse</h4>
+                  <h4 className="text-xs uppercase tracking-widest font-bold text-white/90">Adresse</h4>
                   <p className="text-white/60 text-sm font-light leading-relaxed tracking-wide">
-                    124 Boulevard d'Anfa,<br />
-                    Gauthier, Casablanca 20000
+                    Quartier Takaddoum,<br />
+                    Rabat, Maroc
                   </p>
                 </div>
               </div>
@@ -83,10 +84,10 @@ export default function Showroom() {
               <div className="flex gap-6 items-start">
                 <Clock className="text-gold shrink-0 mt-1" size={20} />
                 <div className="space-y-2">
-                  <h4 className="text-xs uppercase tracking-widest font-bold">Horaires</h4>
+                  <h4 className="text-xs uppercase tracking-widest font-bold text-white/90">Horaires</h4>
                   <p className="text-white/60 text-sm font-light leading-relaxed tracking-wide">
                     Lundi — Samedi<br />
-                    10:00 — 19:30
+                    09:00 — 18:00
                   </p>
                 </div>
               </div>
@@ -94,9 +95,9 @@ export default function Showroom() {
               <div className="flex gap-6 items-start">
                 <Phone className="text-gold shrink-0 mt-1" size={20} />
                 <div className="space-y-2">
-                  <h4 className="text-xs uppercase tracking-widest font-bold">Téléphone</h4>
+                  <h4 className="text-xs uppercase tracking-widest font-bold text-white/90">Téléphone</h4>
                   <p className="text-white/60 text-sm font-light leading-relaxed tracking-wide">
-                    +212 522 00 00 00
+                    +212 707 95 11 23
                   </p>
                 </div>
               </div>
@@ -119,24 +120,5 @@ export default function Showroom() {
         </div>
       </div>
     </section>
-  );
-}
-
-function ArrowRight({ size, className }: { size: number, className?: string }) {
-  return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
   );
 }
