@@ -3,14 +3,83 @@
 import { useWishlist } from "@/lib/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Trash2, ArrowRight, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Trash2, ArrowRight, ShoppingBag, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: ""
+  });
 
   const totalPrice = wishlist.reduce((acc, item) => {
     return acc + parseInt(item.price.replace(".", ""));
   }, 0);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (wishlist.length === 0) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          items: wishlist,
+          totalPrice
+        })
+      });
+      
+      if (response.ok) {
+        setIsSuccess(true);
+        clearWishlist();
+      } else {
+        alert("Une erreur est survenue. Veuillez réessayer ou nous contacter sur WhatsApp.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Une erreur est survenue.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isSuccess) {
+    return (
+      <div className="pt-48 pb-24 px-6 min-h-screen bg-white text-center">
+        <div className="container mx-auto max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="space-y-8"
+          >
+            <CheckCircle2 size={80} className="mx-auto text-gold mb-8" strokeWidth={1} />
+            <h1 className="text-5xl font-serif tracking-tight">Merci, {formData.name.split(' ')[0]}</h1>
+            <p className="text-xl text-muted-foreground font-light leading-relaxed">
+              Votre demande de devis a été transmise avec succès. <br />
+              Un conseiller Diamontaris vous contactera sous 24h pour finaliser votre projet.
+            </p>
+            <div className="pt-12">
+              <Link 
+                href="/shop"
+                className="inline-flex items-center gap-4 bg-black text-white px-12 py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-colors"
+              >
+                Continuer l'exploration
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-32 pb-24 px-6 min-h-screen bg-white">
@@ -98,40 +167,68 @@ export default function WishlistPage() {
 
             {/* Summary / Checkout */}
             <div className="lg:col-span-5">
-              <div className="bg-[#FAFAFA] p-10 sticky top-32 border border-beige/50">
-                <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-10 pb-4 border-b border-beige">Récapitulatif</h3>
+              <div className="bg-[#FAFAFA] p-10 sticky top-32 border border-beige/50 shadow-sm">
+                <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-10 pb-4 border-b border-beige">Informations de contact</h3>
                 
-                <div className="space-y-6 mb-10">
-                  <div className="flex justify-between text-sm uppercase tracking-widest text-muted-foreground">
-                    <span>Articles</span>
-                    <span>{wishlist.length}</span>
+                <form onSubmit={handleSubmit} className="space-y-8 mb-10">
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Nom Complet</label>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="M. / Mme. ..."
+                      className="w-full bg-white border border-beige/50 px-4 py-4 outline-none focus:border-gold transition-colors font-serif text-lg"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    />
                   </div>
-                  <div className="flex justify-between text-sm uppercase tracking-widest text-muted-foreground">
-                    <span>Livraison</span>
-                    <span className="text-gold italic">Offerte (Maroc)</span>
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Email</label>
+                    <input 
+                      required
+                      type="email" 
+                      placeholder="votre@email.com"
+                      className="w-full bg-white border border-beige/50 px-4 py-4 outline-none focus:border-gold transition-colors font-serif text-lg"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    />
                   </div>
-                  <div className="pt-6 border-t border-beige flex justify-between items-baseline">
-                    <span className="text-sm uppercase tracking-widest font-bold">Total Estimé</span>
-                    <span className="text-3xl font-serif text-primary">{totalPrice.toLocaleString()} MAD</span>
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Téléphone</label>
+                    <input 
+                      required
+                      type="tel" 
+                      placeholder="06 ..."
+                      className="w-full bg-white border border-beige/50 px-4 py-4 outline-none focus:border-gold transition-colors font-serif text-lg"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    />
                   </div>
-                </div>
 
-                <div className="space-y-4">
-                  <button 
-                    onClick={() => alert("Cette fonctionnalité sera bientôt disponible avec l'intégration du paiement ou du WhatsApp Concierge.")}
-                    className="w-full bg-black text-white py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-all duration-500 shadow-xl flex items-center justify-center gap-4 group"
-                  >
-                    Finaliser ma Demande <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
-                  </button>
-                  <p className="text-[9px] text-center text-muted-foreground uppercase tracking-widest pt-4">
-                    Paiement sécurisé ou Règlement à la livraison
-                  </p>
-                </div>
+                  <div className="pt-6 border-t border-beige">
+                    <div className="flex justify-between items-baseline mb-8">
+                      <span className="text-sm uppercase tracking-widest font-bold">Total Estimé</span>
+                      <span className="text-3xl font-serif text-primary">{totalPrice.toLocaleString()} MAD</span>
+                    </div>
 
-                <div className="mt-12 p-6 border border-dashed border-beige text-center">
+                    <button 
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-black text-white py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-all duration-500 shadow-xl flex items-center justify-center gap-4 group disabled:bg-primary/20"
+                    >
+                      {isSubmitting ? (
+                        <>Traitement en cours... <Loader2 size={14} className="animate-spin" /></>
+                      ) : (
+                        <>Finaliser ma Demande <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" /></>
+                      )}
+                    </button>
+                  </div>
+                </form>
+
+                <div className="mt-8 p-6 border border-dashed border-beige text-center">
                   <p className="text-[10px] uppercase tracking-widest text-gold font-bold mb-2">Service Excellence</p>
                   <p className="text-[9px] text-muted-foreground leading-relaxed">
-                    Besoin de conseils personnalisés ? Nos experts sont à votre disposition pour configurer votre intérieur.
+                    Vos données sont confidentielles. Un conseiller vous contactera pour valider les détails techniques et logistiques.
                   </p>
                 </div>
               </div>
