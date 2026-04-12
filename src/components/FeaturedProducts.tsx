@@ -5,17 +5,29 @@ import Link from "next/link";
 import { Plus, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TextReveal from "./TextReveal";
+import { Product, PRODUCTS } from "@/lib/products";
+import { useWishlist } from "@/lib/WishlistContext";
 
-interface ProductCardProps {
-  id: string;
-  name: string;
-  price: string;
-  image: string;
-  category: string;
+interface ProductCardProps extends Product {
   className?: string;
 }
 
-export function ProductCard({ id, name, price, image, category, className }: ProductCardProps) {
+export function ProductCard(product: ProductCardProps) {
+  const { id, name, price, image, category, className } = product;
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  
+  const isFavorite = isInWishlist(id);
+
+  const toggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isFavorite) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -26,7 +38,6 @@ export function ProductCard({ id, name, price, image, category, className }: Pro
     >
       <Link 
         href={`/product/${id}`} 
-        data-cursor="PLUS"
         className="block relative aspect-[3/4] overflow-hidden bg-beige mb-4 md:mb-8"
       >
         {/* Subtle Image Zoom */}
@@ -39,11 +50,17 @@ export function ProductCard({ id, name, price, image, category, className }: Pro
         />
 
         {/* Favorite Button */}
-        <button className="absolute top-3 right-3 md:top-5 md:right-5 z-20 text-white/70 hover:text-gold transition-colors duration-300 active:scale-90">
-          <Heart size={18} strokeWidth={1.5} className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+        <button 
+          onClick={toggleWishlist}
+          className={cn(
+            "absolute top-3 right-3 md:top-5 md:right-5 z-20 transition-all duration-300 active:scale-90 p-2 rounded-full backdrop-blur-sm",
+            isFavorite ? "text-gold bg-white/20" : "text-white/70 bg-black/10 hover:text-gold"
+          )}
+        >
+          <Heart size={18} strokeWidth={1.5} fill={isFavorite ? "currentColor" : "none"} className="w-4 h-4 md:w-[18px] md:h-[18px]" />
         </button>
 
-        {/* Quick View Overlay - Hidden on small mobile for cleaner look */}
+        {/* Quick View Overlay - Hidden on small mobile */}
         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out hidden md:block" />
         
         <div className="absolute inset-x-0 bottom-0 p-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-out z-20 hidden md:block">
@@ -67,36 +84,7 @@ export function ProductCard({ id, name, price, image, category, className }: Pro
   );
 }
 
-const featuredProducts = [
-  {
-    id: "1",
-    name: "Canapé Royal Velours",
-    price: "18.500",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800",
-    category: "Salon",
-  },
-  {
-    id: "2",
-    name: "Table Basse Marbre Noir",
-    price: "4.200",
-    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=800",
-    category: "Salon",
-  },
-  {
-    id: "3",
-    name: "Lit King Size Prestige",
-    price: "22.000",
-    image: "https://images.unsplash.com/photo-1505693419148-de397e52b827?q=80&w=800",
-    category: "Chambre",
-  },
-  {
-    id: "4",
-    name: "Fauteuil Pivotant Design",
-    price: "3.800",
-    image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800",
-    category: "Décoration",
-  },
-];
+const featuredProducts = PRODUCTS.filter(p => p.featured);
 
 export default function FeaturedProducts() {
   return (
@@ -119,7 +107,6 @@ export default function FeaturedProducts() {
           </div>
           <Link 
             href="/shop" 
-            data-cursor="TOUT"
             className="group flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] font-bold pb-2 transition-all duration-300"
           >
             Voir la Collection

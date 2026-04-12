@@ -3,66 +3,25 @@
 import { useState, useMemo } from "react";
 import { ProductCard } from "@/components/FeaturedProducts";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, ChevronDown, LayoutGrid, List } from "lucide-react";
+import { Filter, ChevronDown, LayoutGrid, List, X } from "lucide-react";
 import { CATEGORIES } from "@/lib/categories";
-
-const allProducts = [
-  {
-    id: "1",
-    name: "Canapé Royal Velours",
-    price: "18.500",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800",
-    category: "Salon",
-    subCategory: "Canapés",
-  },
-  {
-    id: "2",
-    name: "Table Basse Marbre Noir",
-    price: "4.200",
-    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=800",
-    category: "Salon",
-    subCategory: "Tables basses",
-  },
-  {
-    id: "3",
-    name: "Lit King Size Prestige",
-    price: "22.000",
-    image: "https://images.unsplash.com/photo-1505693419148-de397e52b827?q=80&w=800",
-    category: "Chambre",
-    subCategory: "Lits",
-  },
-  {
-    id: "4",
-    name: "Fauteuil Pivotant Design",
-    price: "3.800",
-    image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800",
-    category: "Décoration",
-    subCategory: "Fauteuils",
-  },
-  {
-    id: "5",
-    name: "Table à Manger Chêne Massif",
-    price: "12.500",
-    image: "https://images.unsplash.com/photo-1530018607912-eff2df114f11?q=80&w=800",
-    category: "Salle à manger",
-    subCategory: "Tables à manger",
-  },
-  {
-    id: "6",
-    name: "Console Entrée Dorée",
-    price: "5.400",
-    image: "https://images.unsplash.com/photo-1513519247388-19345420d4c4?q=80&w=800",
-    category: "Décoration",
-    subCategory: "Objets décoratifs",
-  },
-];
+import { PRODUCTS } from "@/lib/products";
+import { cn } from "@/lib/utils";
 
 export default function ShopPage({ initialCategory = "Tous" }: { initialCategory?: string }) {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedSubCategory, setSelectedSubCategory] = useState("Tous");
+  const [selectedMaterial, setSelectedMaterial] = useState("Tous");
+  const [maxPrice, setMaxPrice] = useState<number>(50000);
+  const [showFilters, setShowFilters] = useState(false);
 
   const categoryNames = ["Tous", ...CATEGORIES.map(c => c.name)];
   
+  const materials = useMemo(() => {
+    const allMaterials = PRODUCTS.map(p => p.material);
+    return ["Tous", ...Array.from(new Set(allMaterials))];
+  }, []);
+
   const currentCategory = useMemo(() => 
     CATEGORIES.find(c => c.name === selectedCategory),
     [selectedCategory]
@@ -74,18 +33,16 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
   );
 
   const filteredProducts = useMemo(() => {
-    let filtered = allProducts;
-    
-    if (selectedCategory !== "Tous") {
-      filtered = filtered.filter(p => p.category === selectedCategory);
+    return PRODUCTS.filter(p => {
+      const categoryMatch = selectedCategory === "Tous" || p.category === selectedCategory;
+      const subCategoryMatch = selectedSubCategory === "Tous" || p.subCategory === selectedSubCategory;
+      const materialMatch = selectedMaterial === "Tous" || p.material === selectedMaterial;
+      const priceValue = parseInt(p.price.replace(".", ""));
+      const priceMatch = priceValue <= maxPrice;
       
-      if (selectedSubCategory !== "Tous") {
-        filtered = filtered.filter(p => p.subCategory === selectedSubCategory);
-      }
-    }
-    
-    return filtered;
-  }, [selectedCategory, selectedSubCategory]);
+      return categoryMatch && subCategoryMatch && materialMatch && priceMatch;
+    });
+  }, [selectedCategory, selectedSubCategory, selectedMaterial, maxPrice]);
 
   return (
     <div className="pt-32 pb-24 px-6 min-h-screen bg-[#FAFAFA]">
@@ -132,43 +89,22 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
               ))}
             </div>
 
-            {/* Sub Categories */}
-            <AnimatePresence mode="wait">
-              {subCategories.length > 0 && (
-                <motion.div 
-                  key={selectedCategory}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {subCategories.map((sub, idx) => (
-                      <motion.button
-                        key={sub}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + idx * 0.02 }}
-                        onClick={() => setSelectedSubCategory(sub)}
-                        className={`text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full transition-all duration-300 ${
-                          selectedSubCategory === sub 
-                            ? "bg-gold text-white" 
-                            : "bg-beige/30 text-muted-foreground hover:bg-beige/50"
-                        }`}
-                      >
-                        {sub}
-                      </motion.button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            
             {/* Toolbar */}
-            <div className="flex items-center justify-between py-4 border-t border-beige/30">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
-                {filteredProducts.length} PIÈCES TROUVÉES
-              </p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between py-4 border-t border-beige/30 gap-6">
+              <div className="flex flex-wrap items-center gap-4">
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium border-r border-beige pr-4">
+                  {filteredProducts.length} PIÈCES TROUVÉES
+                </p>
+                <button 
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={cn(
+                    "flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold transition-colors",
+                    showFilters ? "text-gold" : "text-primary hover:text-gold"
+                  )}
+                >
+                  <Filter size={14} /> {showFilters ? "Fermer Filtres" : "Affiner la recherche"}
+                </button>
+              </div>
               
               <div className="flex items-center gap-8">
                 <div className="hidden md:flex items-center gap-4 border-r border-beige pr-8">
@@ -177,14 +113,101 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
                 </div>
                 <div className="flex items-center gap-6">
                   <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest hover:text-gold transition-colors font-semibold">
-                    <Filter size={14} /> Filtrer
-                  </button>
-                  <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest hover:text-gold transition-colors font-semibold">
                     Trier <ChevronDown size={14} />
                   </button>
                 </div>
               </div>
             </div>
+
+            {/* Advanced Filters Panel */}
+            <AnimatePresence>
+              {showFilters && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden bg-white border border-beige/50 p-8 shadow-sm"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    {/* Sub-categories */}
+                    <div className="space-y-6">
+                      <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-gold">Sous-Catégories</p>
+                      <div className="flex flex-wrap gap-2">
+                        {subCategories.length > 0 ? subCategories.map((sub) => (
+                          <button
+                            key={sub}
+                            onClick={() => setSelectedSubCategory(sub)}
+                            className={`text-[9px] uppercase tracking-widest px-4 py-2 border transition-all ${
+                              selectedSubCategory === sub 
+                                ? "bg-primary text-white border-primary" 
+                                : "bg-transparent border-beige text-muted-foreground hover:border-gold"
+                            }`}
+                          >
+                            {sub}
+                          </button>
+                        )) : (
+                          <p className="text-[10px] italic text-muted-foreground">Sélectionnez une catégorie principale</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Materials */}
+                    <div className="space-y-6">
+                      <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-gold">Matériaux</p>
+                      <div className="flex flex-wrap gap-2">
+                        {materials.map((mat) => (
+                          <button
+                            key={mat}
+                            onClick={() => setSelectedMaterial(mat)}
+                            className={`text-[9px] uppercase tracking-widest px-4 py-2 border transition-all ${
+                              selectedMaterial === mat 
+                                ? "bg-primary text-white border-primary" 
+                                : "bg-transparent border-beige text-muted-foreground hover:border-gold"
+                            }`}
+                          >
+                            {mat}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Price Range */}
+                    <div className="space-y-6">
+                      <div className="flex justify-between items-center">
+                        <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-gold">Budget Max</p>
+                        <span className="text-xs font-serif">{maxPrice.toLocaleString()} MAD</span>
+                      </div>
+                      <input 
+                        type="range" 
+                        min="1000" 
+                        max="50000" 
+                        step="1000"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+                        className="w-full accent-gold h-1 bg-beige rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div className="flex justify-between text-[8px] uppercase tracking-widest text-muted-foreground">
+                        <span>1.000 MAD</span>
+                        <span>50.000 MAD</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 pt-8 border-t border-beige/30 flex justify-end">
+                    <button 
+                      onClick={() => {
+                        setSelectedSubCategory("Tous");
+                        setSelectedMaterial("Tous");
+                        setMaxPrice(50000);
+                      }}
+                      className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+                    >
+                      <X size={10} /> Réinitialiser les filtres
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
@@ -201,10 +224,15 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <p className="text-primary font-serif italic text-2xl mb-4">Une page blanche...</p>
-              <p className="text-muted-foreground text-xs uppercase tracking-widest">Nous n'avons pas encore de pièces dans cette collection.</p>
+              <p className="text-primary font-serif italic text-2xl mb-4">Aucune pièce trouvée...</p>
+              <p className="text-muted-foreground text-xs uppercase tracking-widest">Essayez d'ajuster vos filtres pour trouver votre bonheur.</p>
               <button 
-                onClick={() => { setSelectedCategory("Tous"); setSelectedSubCategory("Tous"); }}
+                onClick={() => { 
+                  setSelectedCategory("Tous"); 
+                  setSelectedSubCategory("Tous"); 
+                  setSelectedMaterial("Tous");
+                  setMaxPrice(50000);
+                }}
                 className="mt-8 text-gold uppercase tracking-widest text-[10px] font-bold border-b border-gold pb-1 hover:text-primary hover:border-primary transition-all"
               >
                 Voir toutes les collections

@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import ConciergeModal from "@/components/ConciergeModal";
 import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
+import ClientProviders from "@/components/ClientProviders";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,12 +38,14 @@ export default function RootLayout({
         )}
       >
         <div className="noise-overlay" />
-        <Navbar />
-        <ConciergeModal />
-        <SmoothScroll>
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-        </SmoothScroll>
+        <ClientProviders>
+          <Navbar />
+          <ConciergeModal />
+          <SmoothScroll>
+            <main className="min-h-screen">{children}</main>
+            <Footer />
+          </SmoothScroll>
+        </ClientProviders>
       </body>
     </html>
   );
