@@ -2,10 +2,11 @@
 
 import { use } from "react";
 import ShopPage from "../../shop/page";
+import { CATEGORIES } from "@/lib/categories";
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
-  // This is a simple way to reuse the shop logic for now
-  // In a real app, we would pass the category as a prop
-  return <ShopPage />;
+  const category = CATEGORIES.find(c => c.slug === resolvedParams.slug);
+  
+  return <ShopPage initialCategory={category?.name || "Tous"} />;
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mail, Phone, MapPin, MessageCircle, ExternalLink } from "lucide-react";
+import { CATEGORIES } from "@/lib/categories";
 
 export default function Footer() {
   return (
@@ -35,11 +36,17 @@ export default function Footer() {
           {/* Categories */}
           <div>
             <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Univers</h4>
-            <ul className="space-y-4">
-              <li><Link href="/category/salons" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Salons</Link></li>
-              <li><Link href="/category/chambres" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Chambres</Link></li>
-              <li><Link href="/category/salles-a-manger" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Salles à Manger</Link></li>
-              <li><Link href="/category/decoration" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Décoration</Link></li>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-4">
+              {CATEGORIES.map((cat) => (
+                <li key={cat.id}>
+                  <Link 
+                    href={`/category/${cat.slug}`} 
+                    className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
