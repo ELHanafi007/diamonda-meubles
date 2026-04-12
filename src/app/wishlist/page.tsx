@@ -189,7 +189,7 @@ export default function WishlistPage() {
                             onClick={() => removeFromWishlist(item.id)}
                             className="text-muted-foreground hover:text-red-500 transition-colors p-1"
                           >
-                            <Trash2 size={14} md:size={16} strokeWidth={1.5} />
+                            <Trash2 size={16} strokeWidth={1.5} className="w-3.5 h-3.5 md:w-4 md:h-4" />
                           </button>
                         </div>
                         
