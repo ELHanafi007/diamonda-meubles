@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
-import Navbar from "@/components/Navbar";
-import ConciergeModal from "@/components/ConciergeModal";
-import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
 import ClientProviders from "@/components/ClientProviders";
+import ConditionalLayout from "@/components/ConditionalLayout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,12 +36,9 @@ export default function RootLayout({
       >
         <div className="noise-overlay" />
         <ClientProviders>
-          <Navbar />
-          <ConciergeModal />
-          <SmoothScroll>
-            <main className="min-h-screen">{children}</main>
-            <Footer />
-          </SmoothScroll>
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
         </ClientProviders>
       </body>
     </html>
