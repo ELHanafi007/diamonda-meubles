@@ -2,7 +2,7 @@
 
 import { use, useMemo } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, ArrowLeft, Heart, Share2, Ruler, ShieldCheck, Truck } from "lucide-react";
+import { MessageCircle, ArrowLeft, Heart, Share2, Ruler, ShieldCheck, Truck, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { ProductCard } from "@/components/FeaturedProducts";
 import { PRODUCTS } from "@/lib/products";
