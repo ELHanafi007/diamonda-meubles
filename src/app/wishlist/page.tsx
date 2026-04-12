@@ -56,7 +56,7 @@ export default function WishlistPage() {
   };
 
   const whatsappMessage = `Bonjour Diamontaris, je souhaite recevoir un devis pour ma sélection :\n${wishlist.map(item => `- ${item.name} (${item.price} MAD)`).join('\n')}\nTotal estimé : ${totalPrice.toLocaleString()} MAD\n\nClient : ${formData.name}\nVille : ${formData.city}\nAdresse : ${formData.address}\nTél : ${formData.phone}`;
-  const whatsappUrl = `https://wa.me/212600000000?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappUrl = `https://wa.me/212707951123?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <div className="pt-32 pb-24 px-6 min-h-screen bg-white relative">

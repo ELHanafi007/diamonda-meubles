@@ -408,7 +408,7 @@ export default function Navbar() {
               </div>
               <div className="flex gap-6">
                 <span className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-primary transition-colors cursor-pointer">Instagram</span>
-                <span className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-primary transition-colors cursor-pointer">WhatsApp</span>
+                <a href="https://wa.me/212707951123" target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-primary transition-colors cursor-pointer">WhatsApp</a>
               </div>
             </div>
           </motion.div>

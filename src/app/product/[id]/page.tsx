@@ -108,25 +108,29 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </motion.div>
 
             <div className="flex flex-col gap-6">
-              <button className="group relative w-full bg-black text-white py-7 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-500 hover:shadow-2xl">
+              <button 
+                onClick={toggleWishlist}
+                className={cn(
+                  "group relative w-full py-7 uppercase tracking-[0.3em] text-[10px] font-bold overflow-hidden transition-all duration-500 hover:shadow-2xl flex items-center justify-center gap-4",
+                  isFavorite ? "bg-gold text-white" : "bg-black text-white hover:bg-gold"
+                )}
+              >
                 <span className="relative z-10 flex items-center justify-center gap-4">
-                  <MessageCircle size={18} strokeWidth={1.5} />
-                  Consulter Notre Concierge
+                  <ShoppingBag size={18} strokeWidth={1.5} />
+                  {isFavorite ? "Dans votre panier" : "Ajouter au Panier"}
                 </span>
-                <div className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                {!isFavorite && <div className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />}
               </button>
               
               <div className="flex gap-4">
-                <button 
-                  onClick={toggleWishlist}
-                  className={cn(
-                    "flex-1 border py-5 flex items-center justify-center gap-3 transition-all duration-500 uppercase tracking-[0.2em] text-[10px] font-bold",
-                    isFavorite ? "border-gold bg-gold/5 text-gold" : "border-beige hover:border-gold text-primary"
-                  )}
+                <a 
+                  href={`https://wa.me/212707951123?text=${encodeURIComponent("Bonjour, je souhaite plus d'informations sur le produit : " + product.name)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 border border-beige py-5 flex items-center justify-center gap-3 hover:border-gold transition-all duration-500 uppercase tracking-[0.2em] text-[10px] font-bold"
                 >
-                  <Heart size={16} fill={isFavorite ? "currentColor" : "none"} /> 
-                  {isFavorite ? "Dans vos favoris" : "Ajouter aux favoris"}
-                </button>
+                  <MessageCircle size={16} /> Consulter un expert
+                </a>
                 <button className="flex-1 border border-beige py-5 flex items-center justify-center gap-3 hover:border-gold transition-all duration-500 uppercase tracking-[0.2em] text-[10px] font-bold">
                   <Share2 size={16} /> Partager
                 </button>
