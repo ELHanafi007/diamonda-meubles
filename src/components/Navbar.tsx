@@ -14,8 +14,8 @@ const navLinks = [
   { name: "Accueil", href: "/" },
   { name: "Collections", href: "/shop", hasDropdown: true },
   { name: "L'Atelier", href: "/#atelier" },
-  { name: "Showroom", href: "/#showroom" },
-  { name: "Contact", href: "/#contact" },
+  { name: "Showroom", href: "/contact" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
