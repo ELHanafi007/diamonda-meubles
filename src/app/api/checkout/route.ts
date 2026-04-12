@@ -1,9 +1,16 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: Request) {
+  const apiKey = process.env.RESEND_API_KEY;
+  
+  if (!apiKey) {
+    console.error("RESEND_API_KEY is missing");
+    return NextResponse.json({ error: "Configuration error" }, { status: 500 });
+  }
+
+  const resend = new Resend(apiKey);
+
   try {
     const body = await request.json();
     const { name, email, phone, items, totalPrice } = body;
@@ -18,7 +25,7 @@ export async function POST(request: Request) {
     `).join('');
 
     const { data, error } = await resend.emails.send({
-      from: 'Diamontaris Meubles <onboarding@resend.dev>', // Resend standard sender for free tier
+      from: 'Diamontaris Meubles <onboarding@resend.dev>',
       to: [process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'me.kaoukabi@gmail.com'],
       subject: `Nouvelle Demande de Devis - ${name}`,
       html: `
