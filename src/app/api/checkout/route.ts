@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { name, email, phone, items, totalPrice } = body;
+    const { name, city, address, phone, items, totalPrice } = body;
 
     const itemsHtml = items.map((item: any) => `
       <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
@@ -27,17 +27,18 @@ export async function POST(request: Request) {
     const { data, error } = await resend.emails.send({
       from: 'Diamontaris Meubles <onboarding@resend.dev>',
       to: [process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'me.kaoukabi@gmail.com'],
-      subject: `Nouvelle Demande de Devis - ${name}`,
+      subject: `Nouvelle Commande - ${name} (${city})`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
           <h1 style="color: #B8860B; font-family: serif; text-align: center;">DIAMONTARIS MEUBLES</h1>
-          <p style="text-align: center; text-transform: uppercase; letter-spacing: 2px; font-size: 12px;">Nouvelle commande reçue</p>
+          <p style="text-align: center; text-transform: uppercase; letter-spacing: 2px; font-size: 12px;">Demande de devis et livraison</p>
           
           <div style="background: #f9f9f9; padding: 30px; margin: 30px 0; border: 1px solid #eee;">
-            <h2 style="font-size: 18px; margin-top: 0;">Informations Client</h2>
+            <h2 style="font-size: 18px; margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Informations Client</h2>
             <p><strong>Nom:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Téléphone:</strong> ${phone}</p>
+            <p><strong>Tél:</strong> ${phone}</p>
+            <p><strong>Ville:</strong> ${city}</p>
+            <p><strong>Adresse:</strong> ${address}</p>
           </div>
 
           <h2 style="font-size: 18px;">Détail de la sélection</h2>
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
           </div>
 
           <p style="font-size: 12px; color: #999; margin-top: 50px; text-align: center;">
-            Ce message a été généré automatiquement par le système de conciergerie Diamontaris.
+            Ce message a été généré par la conciergerie Diamontaris Meubles Rabat.
           </p>
         </div>
       `,

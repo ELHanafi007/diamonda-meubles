@@ -15,7 +15,8 @@ export default function WishlistPage() {
   
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    city: "",
+    address: "",
     phone: ""
   });
 
@@ -41,8 +42,6 @@ export default function WishlistPage() {
         })
       });
       
-      const result = await response.json();
-
       if (response.ok) {
         setIsSuccess(true);
         clearWishlist();
@@ -56,7 +55,7 @@ export default function WishlistPage() {
     }
   };
 
-  const whatsappMessage = `Bonjour Diamontaris, je souhaite recevoir un devis pour ma sélection :\n${wishlist.map(item => `- ${item.name} (${item.price} MAD)`).join('\n')}\nTotal estimé : ${totalPrice.toLocaleString()} MAD`;
+  const whatsappMessage = `Bonjour Diamontaris, je souhaite recevoir un devis pour ma sélection :\n${wishlist.map(item => `- ${item.name} (${item.price} MAD)`).join('\n')}\nTotal estimé : ${totalPrice.toLocaleString()} MAD\n\nClient : ${formData.name}\nVille : ${formData.city}\nAdresse : ${formData.address}\nTél : ${formData.phone}`;
   const whatsappUrl = `https://wa.me/212600000000?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
@@ -76,7 +75,6 @@ export default function WishlistPage() {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="bg-white max-w-xl w-full p-12 md:p-16 text-center shadow-2xl relative overflow-hidden"
             >
-              {/* Decorative background element */}
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gold" />
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/5 rounded-full blur-3xl" />
               
@@ -93,7 +91,7 @@ export default function WishlistPage() {
               <p className="text-muted-foreground leading-relaxed mb-12 font-light">
                 Merci <span className="text-primary font-medium">{formData.name}</span>. 
                 Votre sélection exclusive a été envoyée à notre service conciergerie. 
-                Un conseiller Diamontaris vous contactera sur votre numéro <span className="text-primary font-medium">{formData.phone}</span> sous peu.
+                Nous vous contacterons très prochainement pour valider la livraison à <span className="text-primary font-medium">{formData.city}</span>.
               </p>
 
               <Link 
@@ -165,7 +163,6 @@ export default function WishlistPage() {
                       transition={{ delay: idx * 0.05 }}
                       className="flex gap-4 md:gap-8 py-6 border-b border-beige group items-center"
                     >
-                      {/* Small Thumbnail */}
                       <div className="w-20 h-24 md:w-32 md:h-40 overflow-hidden bg-beige shrink-0">
                         <img 
                           src={item.image} 
@@ -174,7 +171,6 @@ export default function WishlistPage() {
                         />
                       </div>
 
-                      {/* Item Info - More compact on mobile */}
                       <div className="flex-1 flex flex-col justify-center min-w-0">
                         <div className="flex justify-between items-start gap-4">
                           <div className="min-w-0">
@@ -215,7 +211,7 @@ export default function WishlistPage() {
             {/* Summary / Checkout Form */}
             <div className="lg:col-span-5">
               <div className="bg-[#FAFAFA] p-10 sticky top-32 border border-beige/50 shadow-sm">
-                <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-10 pb-4 border-b border-beige">Finaliser ma Sélection</h3>
+                <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-10 pb-4 border-b border-beige">Informations de livraison</h3>
                 
                 {error && (
                   <motion.div 
@@ -254,17 +250,6 @@ export default function WishlistPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Email</label>
-                    <input 
-                      required
-                      type="email" 
-                      placeholder="votre@email.com"
-                      className="w-full bg-white border border-beige/50 px-4 py-4 outline-none focus:border-gold transition-colors font-serif text-lg"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
                     <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Téléphone</label>
                     <input 
                       required
@@ -273,6 +258,28 @@ export default function WishlistPage() {
                       className="w-full bg-white border border-beige/50 px-4 py-4 outline-none focus:border-gold transition-colors font-serif text-lg"
                       value={formData.phone}
                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Ville</label>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="Rabat, Casablanca, ..."
+                      className="w-full bg-white border border-beige/50 px-4 py-4 outline-none focus:border-gold transition-colors font-serif text-lg"
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Adresse de livraison</label>
+                    <textarea 
+                      required
+                      rows={2}
+                      placeholder="Votre adresse complète..."
+                      className="w-full bg-white border border-beige/50 px-4 py-4 outline-none focus:border-gold transition-colors font-serif text-lg resize-none"
+                      value={formData.address}
+                      onChange={(e) => setFormData({...formData, address: e.target.value})}
                     />
                   </div>
 
