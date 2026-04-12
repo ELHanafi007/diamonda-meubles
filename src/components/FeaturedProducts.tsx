@@ -40,7 +40,7 @@ export function ProductCard({ id, name, price, image, category, className }: Pro
 
         {/* Favorite Button */}
         <button className="absolute top-3 right-3 md:top-5 md:right-5 z-20 text-white/70 hover:text-gold transition-colors duration-300 active:scale-90">
-          <Heart size={16} md:size={18} strokeWidth={1.5} />
+          <Heart size={18} strokeWidth={1.5} className="w-4 h-4 md:w-[18px] md:h-[18px]" />
         </button>
 
         {/* Quick View Overlay - Hidden on small mobile for cleaner look */}
