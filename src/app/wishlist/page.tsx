@@ -153,40 +153,63 @@ export default function WishlistPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
             {/* List */}
-            <div className="lg:col-span-7 space-y-8">
-              <AnimatePresence>
-                {wishlist.map((item, idx) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="flex flex-col sm:flex-row gap-8 py-8 border-t border-beige group"
-                  >
-                    <div className="w-full sm:w-40 aspect-[3/4] overflow-hidden bg-beige shrink-0">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-                    </div>
-                    <div className="flex-1 flex flex-col justify-between py-2">
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <span className="text-[9px] uppercase tracking-[0.3em] text-gold font-bold">{item.category}</span>
+            <div className="lg:col-span-7">
+              <div className="space-y-0 border-t border-beige">
+                <AnimatePresence>
+                  {wishlist.map((item, idx) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="flex gap-4 md:gap-8 py-6 border-b border-beige group items-center"
+                    >
+                      {/* Small Thumbnail */}
+                      <div className="w-20 h-24 md:w-32 md:h-40 overflow-hidden bg-beige shrink-0">
+                        <img 
+                          src={item.image} 
+                          alt={item.name} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+                        />
+                      </div>
+
+                      {/* Item Info - More compact on mobile */}
+                      <div className="flex-1 flex flex-col justify-center min-w-0">
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="min-w-0">
+                            <span className="text-[8px] md:text-[9px] uppercase tracking-[0.3em] text-gold font-bold block mb-1">
+                              {item.category}
+                            </span>
+                            <h3 className="text-base md:text-2xl font-serif text-primary truncate">
+                              {item.name}
+                            </h3>
+                            <p className="text-[10px] md:text-sm text-muted-foreground line-clamp-1 font-light md:mt-1">
+                              {item.description}
+                            </p>
+                          </div>
+                          
                           <button 
                             onClick={() => removeFromWishlist(item.id)}
-                            className="text-muted-foreground hover:text-red-500 transition-colors p-2"
+                            className="text-muted-foreground hover:text-red-500 transition-colors p-1"
                           >
-                            <Trash2 size={16} strokeWidth={1.5} />
+                            <Trash2 size={14} md:size={16} strokeWidth={1.5} />
                           </button>
                         </div>
-                        <h3 className="text-2xl font-serif text-primary">{item.name}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2 font-light">{item.description}</p>
-                        <p className="text-[10px] uppercase tracking-widest text-primary/40 pt-2">Matériau: {item.material}</p>
+                        
+                        <div className="flex items-center justify-between mt-3 md:mt-6">
+                          <p className="text-xs md:text-lg font-medium text-primary italic">
+                            {item.price} MAD
+                          </p>
+                          <span className="hidden md:block text-[9px] uppercase tracking-widest text-primary/30">
+                            {item.material}
+                          </span>
+                        </div>
                       </div>
-                      <p className="text-lg font-medium text-primary mt-4 italic">{item.price} MAD</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Summary / Checkout Form */}
