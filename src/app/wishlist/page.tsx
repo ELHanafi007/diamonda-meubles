@@ -3,13 +3,15 @@
 import { useWishlist } from "@/lib/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Trash2, ArrowRight, ShoppingBag, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { Trash2, ArrowRight, ShoppingBag, ArrowLeft, Loader2, CheckCircle2, X, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -26,6 +28,7 @@ export default function WishlistPage() {
     if (wishlist.length === 0) return;
     
     setIsSubmitting(true);
+    setError(null);
     
     try {
       const response = await fetch("/api/checkout", {
@@ -38,51 +41,72 @@ export default function WishlistPage() {
         })
       });
       
+      const result = await response.json();
+
       if (response.ok) {
         setIsSuccess(true);
         clearWishlist();
       } else {
-        alert("Une erreur est survenue. Veuillez réessayer ou nous contacter sur WhatsApp.");
+        setError("L'envoi automatique a échoué. Nos équipes techniques travaillent dessus.");
       }
-    } catch (error) {
-      console.error(error);
-      alert("Une erreur est survenue.");
+    } catch (err) {
+      setError("Une erreur de connexion est survenue.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isSuccess) {
-    return (
-      <div className="pt-48 pb-24 px-6 min-h-screen bg-white text-center">
-        <div className="container mx-auto max-w-2xl">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="space-y-8"
-          >
-            <CheckCircle2 size={80} className="mx-auto text-gold mb-8" strokeWidth={1} />
-            <h1 className="text-5xl font-serif tracking-tight">Merci, {formData.name.split(' ')[0]}</h1>
-            <p className="text-xl text-muted-foreground font-light leading-relaxed">
-              Votre demande de devis a été transmise avec succès. <br />
-              Un conseiller Diamontaris vous contactera sous 24h pour finaliser votre projet.
-            </p>
-            <div className="pt-12">
-              <Link 
-                href="/shop"
-                className="inline-flex items-center gap-4 bg-black text-white px-12 py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-colors"
-              >
-                Continuer l'exploration
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
+  const whatsappMessage = `Bonjour Diamontaris, je souhaite recevoir un devis pour ma sélection :\n${wishlist.map(item => `- ${item.name} (${item.price} MAD)`).join('\n')}\nTotal estimé : ${totalPrice.toLocaleString()} MAD`;
+  const whatsappUrl = `https://wa.me/212600000000?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
-    <div className="pt-32 pb-24 px-6 min-h-screen bg-white">
+    <div className="pt-32 pb-24 px-6 min-h-screen bg-white relative">
+      {/* Success Modal */}
+      <AnimatePresence>
+        {isSuccess && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white max-w-xl w-full p-12 md:p-16 text-center shadow-2xl relative overflow-hidden"
+            >
+              {/* Decorative background element */}
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gold" />
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/5 rounded-full blur-3xl" />
+              
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-10"
+              >
+                <CheckCircle2 size={40} className="text-gold" strokeWidth={1.5} />
+              </motion.div>
+
+              <h2 className="text-4xl md:text-5xl font-serif mb-6 tracking-tight text-primary">Demande Transmise</h2>
+              <p className="text-muted-foreground leading-relaxed mb-12 font-light">
+                Merci <span className="text-primary font-medium">{formData.name}</span>. 
+                Votre sélection exclusive a été envoyée à notre service conciergerie. 
+                Un conseiller Diamontaris vous contactera sur votre numéro <span className="text-primary font-medium">{formData.phone}</span> sous peu.
+              </p>
+
+              <Link 
+                href="/shop"
+                className="inline-block bg-black text-white px-12 py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-all duration-500 shadow-xl"
+              >
+                Continuer l'expérience
+              </Link>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div>
@@ -115,7 +139,7 @@ export default function WishlistPage() {
           )}
         </div>
 
-        {wishlist.length === 0 ? (
+        {wishlist.length === 0 && !isSuccess ? (
           <div className="py-24 text-center border-t border-beige">
             <ShoppingBag size={48} className="mx-auto text-beige mb-8" strokeWidth={1} />
             <p className="text-2xl font-serif italic text-primary/60 mb-8">Votre sélection est vide...</p>
@@ -165,11 +189,35 @@ export default function WishlistPage() {
               </AnimatePresence>
             </div>
 
-            {/* Summary / Checkout */}
+            {/* Summary / Checkout Form */}
             <div className="lg:col-span-5">
               <div className="bg-[#FAFAFA] p-10 sticky top-32 border border-beige/50 shadow-sm">
-                <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-10 pb-4 border-b border-beige">Informations de contact</h3>
+                <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-10 pb-4 border-b border-beige">Finaliser ma Sélection</h3>
                 
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-8 p-6 bg-red-50 border border-red-100 rounded-sm space-y-4"
+                  >
+                    <div className="flex gap-3 text-red-800">
+                      <X size={18} className="shrink-0" />
+                      <p className="text-xs font-medium leading-relaxed">
+                        Une erreur est survenue lors de l'envoi. <br />
+                        Utilisez le bouton WhatsApp ci-dessous pour nous envoyer votre sélection directement.
+                      </p>
+                    </div>
+                    <a 
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white py-4 px-6 text-[10px] uppercase tracking-widest font-bold hover:bg-[#128C7E] transition-colors shadow-md"
+                    >
+                      <MessageCircle size={16} /> Envoyer via WhatsApp
+                    </a>
+                  </motion.div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-8 mb-10">
                   <div className="space-y-2">
                     <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Nom Complet</label>
@@ -213,13 +261,18 @@ export default function WishlistPage() {
 
                     <button 
                       type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-black text-white py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-all duration-500 shadow-xl flex items-center justify-center gap-4 group disabled:bg-primary/20"
+                      disabled={isSubmitting || wishlist.length === 0}
+                      className={cn(
+                        "w-full py-6 uppercase tracking-[0.3em] text-[10px] font-bold transition-all duration-500 shadow-xl flex items-center justify-center gap-4 group",
+                        isSubmitting || wishlist.length === 0 
+                          ? "bg-primary/20 text-white cursor-not-allowed" 
+                          : "bg-black text-white hover:bg-gold"
+                      )}
                     >
                       {isSubmitting ? (
                         <>Traitement en cours... <Loader2 size={14} className="animate-spin" /></>
                       ) : (
-                        <>Finaliser ma Demande <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" /></>
+                        <>Valider ma Demande <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" /></>
                       )}
                     </button>
                   </div>
@@ -227,8 +280,8 @@ export default function WishlistPage() {
 
                 <div className="mt-8 p-6 border border-dashed border-beige text-center">
                   <p className="text-[10px] uppercase tracking-widest text-gold font-bold mb-2">Service Excellence</p>
-                  <p className="text-[9px] text-muted-foreground leading-relaxed">
-                    Vos données sont confidentielles. Un conseiller vous contactera pour valider les détails techniques et logistiques.
+                  <p className="text-[9px] text-muted-foreground leading-relaxed italic">
+                    "Diamantez votre maison avec élégance et sérénité."
                   </p>
                 </div>
               </div>
