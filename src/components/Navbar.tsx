@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingBag, Search, ChevronDown } from "lucide-react";
+import { Menu, X, ShoppingBag, Search, ChevronDown, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 
@@ -20,6 +20,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
+  const [activeMobileTab, setActiveMobileTab] = useState<string | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -179,14 +180,16 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-[60] bg-white flex flex-col"
           >
-            <div className="flex justify-between items-center px-6 py-8">
-              <span className="text-lg font-serif italic text-gold tracking-tight">Diamond Meubles</span>
+            <div className="flex justify-between items-center px-6 py-6 border-b border-beige">
+              <span className="text-xl font-serif tracking-tighter text-primary">
+                DIAMOND <span className="text-gold italic font-extralight">MEUBLES</span>
+              </span>
               <button 
                 className="p-2 active:rotate-90 transition-transform duration-300"
                 onClick={() => setMobileMenuOpen(false)}
@@ -195,43 +198,82 @@ export default function Navbar() {
               </button>
             </div>
             
-            <div className="flex flex-col px-10 py-6 space-y-6 overflow-y-auto">
-              {navLinks.map((link, idx) => (
-                <div key={link.name}>
-                  <Link
-                    href={link.href}
-                    onClick={() => !link.hasDropdown && setMobileMenuOpen(false)}
-                    className="text-2xl font-serif tracking-tight hover:text-gold transition-colors block"
-                  >
-                    {link.name}
-                  </Link>
-                  {link.hasDropdown && (
-                    <div className="grid grid-cols-2 gap-4 mt-4 pl-4 border-l border-beige">
-                      {CATEGORIES.map((cat) => (
-                        <Link
-                          key={cat.id}
-                          href={`/category/${cat.slug}`}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="text-[9px] uppercase tracking-widest text-muted-foreground"
-                        >
-                          {cat.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+            <div className="flex-1 overflow-y-auto px-6 py-8">
+              <div className="space-y-8">
+                {/* Primary Links */}
+                <div className="space-y-6">
+                  <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-3xl font-serif tracking-tight">Accueil</Link>
+                  <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="block text-3xl font-serif tracking-tight">Toutes les Collections</Link>
                 </div>
-              ))}
+
+                <div className="h-[1px] bg-beige w-full" />
+
+                {/* Categories Accordion */}
+                <div className="space-y-4">
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold mb-6">Nos Univers</p>
+                  <div className="space-y-2">
+                    {CATEGORIES.map((cat) => (
+                      <div key={cat.id} className="border-b border-beige/50 last:border-0">
+                        <button 
+                          onClick={() => setActiveMobileTab(activeMobileTab === cat.id ? null : cat.id)}
+                          className="w-full flex items-center justify-between py-4 text-left group"
+                        >
+                          <span className="text-lg font-serif tracking-tight group-hover:text-gold transition-colors">
+                            {cat.icon} <span className="ml-2">{cat.name}</span>
+                          </span>
+                          <ChevronDown size={16} className={cn("transition-transform duration-500 text-gold", activeMobileTab === cat.id && "rotate-180")} />
+                        </button>
+                        
+                        <AnimatePresence>
+                          {activeMobileTab === cat.id && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden bg-[#FAFAFA]"
+                            >
+                              <div className="grid grid-cols-1 py-4 pl-8 space-y-3">
+                                <Link 
+                                  href={`/category/${cat.slug}`} 
+                                  onClick={() => setMobileMenuOpen(false)}
+                                  className="text-[11px] uppercase tracking-widest text-primary font-bold"
+                                >
+                                  Tout voir dans {cat.name}
+                                </Link>
+                                {cat.subCategories.map((sub) => (
+                                  <Link
+                                    key={sub.slug}
+                                    href={`/category/${cat.slug}`}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-gold transition-colors"
+                                  >
+                                    {sub.name}
+                                  </Link>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="mt-auto px-10 pb-16 space-y-8 bg-white">
-              <div className="h-[1px] bg-beige w-full" />
-              <div className="space-y-4">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-semibold">Excellence & Luxe</p>
-                <div className="flex flex-wrap gap-x-8 gap-y-4">
-                  <span className="text-primary uppercase text-[10px] tracking-widest font-medium">Instagram</span>
-                  <span className="text-primary uppercase text-[10px] tracking-widest font-medium">Showroom</span>
-                  <span className="text-primary uppercase text-[10px] tracking-widest font-medium">Contact</span>
+            <div className="p-8 bg-[#FAFAFA] border-t border-beige space-y-6">
+              <div className="flex justify-between items-center">
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase tracking-widest font-bold">Showroom Casablanca</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Ouvert 7j/7 • 10h - 20h</p>
                 </div>
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="p-3 bg-white border border-beige rounded-full">
+                  <MapPin size={18} className="text-gold" />
+                </Link>
+              </div>
+              <div className="flex gap-6">
+                <span className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-primary transition-colors cursor-pointer">Instagram</span>
+                <span className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-primary transition-colors cursor-pointer">WhatsApp</span>
               </div>
             </div>
           </motion.div>

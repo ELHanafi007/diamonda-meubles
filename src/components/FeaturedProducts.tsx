@@ -27,7 +27,7 @@ export function ProductCard({ id, name, price, image, category, className }: Pro
       <Link 
         href={`/product/${id}`} 
         data-cursor="PLUS"
-        className="block relative aspect-[3/4] overflow-hidden bg-beige mb-8"
+        className="block relative aspect-[3/4] overflow-hidden bg-beige mb-4 md:mb-8"
       >
         {/* Subtle Image Zoom */}
         <motion.img
@@ -39,28 +39,28 @@ export function ProductCard({ id, name, price, image, category, className }: Pro
         />
 
         {/* Favorite Button */}
-        <button className="absolute top-5 right-5 z-20 text-white/70 hover:text-gold transition-colors duration-300 active:scale-90">
-          <Heart size={18} strokeWidth={1.5} />
+        <button className="absolute top-3 right-3 md:top-5 md:right-5 z-20 text-white/70 hover:text-gold transition-colors duration-300 active:scale-90">
+          <Heart size={16} md:size={18} strokeWidth={1.5} />
         </button>
 
-        {/* Quick View Overlay */}
-        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out" />
+        {/* Quick View Overlay - Hidden on small mobile for cleaner look */}
+        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out hidden md:block" />
         
-        <div className="absolute inset-x-0 bottom-0 p-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-out z-20">
+        <div className="absolute inset-x-0 bottom-0 p-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-out z-20 hidden md:block">
           <button className="w-full bg-white/90 backdrop-blur-md text-primary py-4 uppercase tracking-[0.3em] text-[9px] font-bold hover:bg-gold hover:text-white transition-all duration-500 shadow-xl flex items-center justify-center gap-3">
             <Plus size={14} /> Aperçu Rapide
           </button>
         </div>
       </Link>
       
-      <div className="flex flex-col space-y-3 mt-auto">
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-gold font-semibold">{category}</span>
+      <div className="flex flex-col space-y-2 md:space-y-3 mt-auto">
+        <div className="flex items-center justify-between gap-2 md:gap-4">
+          <span className="text-[8px] md:text-[10px] uppercase tracking-[0.2em] md:tracking-[0.3em] text-gold font-semibold truncate">{category}</span>
           <div className="h-[1px] bg-beige flex-1" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-lg md:text-xl font-serif tracking-tight text-primary leading-tight group-hover:text-gold transition-colors duration-500">{name}</h3>
-          <p className="text-sm font-medium tracking-tight opacity-70 italic">{price} MAD</p>
+          <h3 className="text-sm md:text-xl font-serif tracking-tight text-primary leading-tight group-hover:text-gold transition-colors duration-500 line-clamp-2">{name}</h3>
+          <p className="text-[10px] md:text-sm font-medium tracking-tight opacity-70 italic">{price} MAD</p>
         </div>
       </div>
     </motion.div>
@@ -102,7 +102,7 @@ export default function FeaturedProducts() {
   return (
     <section className="py-24 md:py-32 bg-white px-6 border-t border-beige overflow-hidden">
       <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-20 gap-10">
           <div className="max-w-2xl">
             <motion.span 
               initial={{ opacity: 0, x: -20 }}
@@ -133,7 +133,7 @@ export default function FeaturedProducts() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-20 lg:gap-x-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-12 md:gap-y-20">
           {featuredProducts.map((product) => (
             <ProductCard key={product.id} {...product} />
           ))}
