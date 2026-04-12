@@ -9,22 +9,22 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
           {/* Brand Info */}
           <div className="space-y-6">
-            <Link href="/" className="text-2xl font-serif tracking-tighter text-primary uppercase">
+            <Link href="/" className="text-2xl font-serif tracking-tighter text-primary uppercase" aria-label="Diamontaris Meubles Accueil">
               DIAMONTARIS <span className="text-gold italic font-light">MEUBLES</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed font-light">
               L'excellence du mobilier de luxe au Maroc. Diamantez votre maison avec nos pièces d'exception et nos ambiances uniques.
             </p>
             <div className="flex space-x-5">
-              <Link href="#" className="text-primary hover:text-gold transition-colors"><MessageCircle size={20} strokeWidth={1.5} /></Link>
-              <Link href="#" className="text-primary hover:text-gold transition-colors"><ExternalLink size={20} strokeWidth={1.5} /></Link>
-              <Link href="#" className="text-primary hover:text-gold transition-colors"><Mail size={20} strokeWidth={1.5} /></Link>
+              <Link href="#" className="text-primary hover:text-gold transition-colors" aria-label="Suivez-nous sur Instagram"><MessageCircle size={20} strokeWidth={1.5} /></Link>
+              <Link href="#" className="text-primary hover:text-gold transition-colors" aria-label="Visitez notre Pinterest"><ExternalLink size={20} strokeWidth={1.5} /></Link>
+              <Link href="mailto:contact@diamontaris.ma" className="text-primary hover:text-gold transition-colors" aria-label="Contactez-nous par email"><Mail size={20} strokeWidth={1.5} /></Link>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Navigation</h4>
+            <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Navigation</h2>
             <ul className="space-y-4">
               <li><Link href="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Accueil</Link></li>
               <li><Link href="/shop" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Collections</Link></li>
@@ -35,7 +35,7 @@ export default function Footer() {
 
           {/* Categories */}
           <div>
-            <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Univers</h4>
+            <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Univers</h2>
             <ul className="grid grid-cols-2 gap-x-4 gap-y-4">
               {CATEGORIES.map((cat) => (
                 <li key={cat.id}>
@@ -52,16 +52,16 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Contact</h4>
+            <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Contact</h2>
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
-                <MapPin size={18} className="text-gold shrink-0 mt-1" />
+                <MapPin size={18} className="text-gold shrink-0 mt-1" aria-hidden="true" />
                 <span className="text-sm text-muted-foreground leading-relaxed font-light">
                   Quartier Takaddoum, <br />Rabat, Maroc
                 </span>
               </li>
               <li className="flex items-center gap-4">
-                <Phone size={18} className="text-gold shrink-0" />
+                <Phone size={18} className="text-gold shrink-0" aria-hidden="true" />
                 <span className="text-sm text-muted-foreground font-light">+212 707 95 11 23</span>
               </li>
             </ul>

@@ -60,7 +60,7 @@ export default function Navbar() {
         <button
           className="lg:hidden text-primary p-2 -ml-2 transition-transform active:scale-95"
           onClick={() => setMobileMenuOpen(true)}
-          aria-label="Menu"
+          aria-label="Ouvrir le menu principal"
         >
           <Menu size={22} />
         </button>
@@ -95,6 +95,7 @@ export default function Navbar() {
         <Link
           href="/"
           className="flex-1 flex justify-center"
+          aria-label="Retour à l'accueil Diamontaris Meubles"
         >
           <motion.div
             animate={{ scale: isScrolled ? 0.9 : 1 }}
@@ -127,12 +128,14 @@ export default function Navbar() {
             <button 
               onClick={() => setSearchOpen(true)}
               className="text-primary/70 hover:text-gold transition-colors duration-300 active:scale-90"
+              aria-label="Ouvrir la recherche"
             >
               <Search size={18} strokeWidth={1.5} />
             </button>
             <Link 
               href="/wishlist"
               className="text-primary/70 hover:text-gold transition-colors duration-300 active:scale-90 relative"
+              aria-label={`Voir mes coups de cœur (${wishlist.length} articles)`}
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
               {wishlist.length > 0 && (
@@ -149,12 +152,14 @@ export default function Navbar() {
           <button 
             onClick={() => setSearchOpen(true)}
             className="text-primary/80 p-2 active:scale-90 transition-transform"
+            aria-label="Ouvrir la recherche"
           >
             <Search size={20} strokeWidth={1.5} />
           </button>
           <Link 
             href="/wishlist"
             className="text-primary/80 p-2 -mr-2 active:scale-90 transition-transform relative"
+            aria-label={`Voir mes coups de cœur (${wishlist.length} articles)`}
           >
             <ShoppingBag size={20} strokeWidth={1.5} />
             {wishlist.length > 0 && (
@@ -174,6 +179,9 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-white flex flex-col"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Barre de recherche"
           >
             <div className="container mx-auto px-6 py-8 md:py-12">
               <div className="flex justify-between items-center mb-12 md:mb-24">
@@ -181,6 +189,7 @@ export default function Navbar() {
                 <button 
                   onClick={() => setSearchOpen(false)}
                   className="p-2 hover:rotate-90 transition-transform duration-500"
+                  aria-label="Fermer la recherche"
                 >
                   <X size={32} strokeWidth={1} />
                 </button>
@@ -195,6 +204,7 @@ export default function Navbar() {
                     className="w-full bg-transparent text-3xl md:text-6xl font-serif outline-none placeholder:text-primary/10"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    aria-label="Saisissez votre recherche"
                   />
                   <div className="absolute bottom-0 left-0 h-[2px] bg-gold w-0 group-focus-within:w-full transition-all duration-1000 ease-out" />
                 </div>
@@ -248,7 +258,7 @@ export default function Navbar() {
                           onClick={() => setSearchOpen(false)}
                           className="group relative h-24 overflow-hidden flex items-center px-8"
                         >
-                          <img src={cat.image} className="absolute inset-0 w-full h-full object-cover grayscale opacity-20 group-hover:scale-110 group-hover:opacity-40 transition-all duration-1000" />
+                          <img src={cat.image} alt={cat.name} className="absolute inset-0 w-full h-full object-cover grayscale opacity-20 group-hover:scale-110 group-hover:opacity-40 transition-all duration-1000" />
                           <div className="absolute inset-0 bg-black/10 group-hover:bg-gold/10 transition-colors" />
                           <h4 className="relative z-10 text-xl font-serif uppercase tracking-widest">{cat.name}</h4>
                         </Link>
@@ -262,7 +272,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Mega Menu Content (Hidden in standard view) */}
+      {/* Mega Menu */}
       <AnimatePresence>
         {showMegaMenu && (
           <motion.div
@@ -328,6 +338,7 @@ export default function Navbar() {
               <button 
                 className="p-2 active:rotate-90 transition-transform duration-300"
                 onClick={() => setMobileMenuOpen(false)}
+                aria-label="Fermer le menu"
               >
                 <X size={24} strokeWidth={1.5} />
               </button>
@@ -352,6 +363,7 @@ export default function Navbar() {
                         <button 
                           onClick={() => setActiveMobileTab(activeMobileTab === cat.id ? null : cat.id)}
                           className="w-full flex items-center justify-between py-4 text-left group"
+                          aria-expanded={activeMobileTab === cat.id}
                         >
                           <span className="text-lg font-serif tracking-tight group-hover:text-gold transition-colors">
                             {cat.icon} <span className="ml-2">{cat.name}</span>
@@ -402,7 +414,7 @@ export default function Navbar() {
                   <p className="text-[10px] uppercase tracking-widest font-bold">Showroom Rabat</p>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Quartier Takaddoum • 9h - 18h</p>
                 </div>
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="p-3 bg-white border border-beige rounded-full">
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="p-3 bg-white border border-beige rounded-full" aria-label="Notre localisation sur Maps">
                   <MapPin size={18} className="text-gold" />
                 </Link>
               </div>

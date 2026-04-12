@@ -13,7 +13,7 @@ export default function Newsletter() {
           
           <div className="relative z-10 text-center space-y-10">
             <div className="space-y-4">
-              <span className="text-gold uppercase tracking-[0.4em] text-[10px] md:text-xs font-bold block">Le Cercle Diamond</span>
+              <span className="text-[#A68918] uppercase tracking-[0.4em] text-[10px] md:text-xs font-bold block">Le Cercle Diamontaris</span>
               <h2 className="text-3xl md:text-5xl font-serif text-primary tracking-tight">Rejoignez l'Exclusivité</h2>
               <p className="text-muted-foreground text-sm md:text-base max-w-lg mx-auto leading-relaxed">
                 Inscrivez-vous pour recevoir nos invitations aux ventes privées, nos nouveaux catalogues et nos conseils en design d'intérieur.
@@ -21,11 +21,16 @@ export default function Newsletter() {
             </div>
 
             <form className="flex flex-col md:flex-row gap-4 max-w-xl mx-auto" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="VOTRE ADRESSE EMAIL"
-                className="flex-1 bg-transparent border-b border-beige py-4 px-2 text-[10px] uppercase tracking-widest focus:border-gold outline-none transition-colors placeholder:text-muted-foreground/50"
-              />
+              <div className="flex-1">
+                <label htmlFor="newsletter-email" className="sr-only">Votre adresse email</label>
+                <input 
+                  id="newsletter-email"
+                  type="email" 
+                  placeholder="VOTRE ADRESSE EMAIL"
+                  className="w-full bg-transparent border-b border-beige py-4 px-2 text-[10px] uppercase tracking-widest focus:border-gold outline-none transition-colors placeholder:text-muted-foreground/50"
+                  required
+                />
+              </div>
               <button 
                 data-cursor="REJOINDRE"
                 className="bg-black text-white px-10 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold transition-colors duration-500"
@@ -34,8 +39,8 @@ export default function Newsletter() {
               </button>
             </form>
             
-            <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground opacity-60">
-              En vous inscrivant, vous acceptez notre politique de confidentialité.
+            <p className="text-[9px] uppercase tracking-[0.2em] text-primary/60 font-medium">
+              EN VOUS INSCRIVANT, VOUS ACCEPTEZ NOTRE POLITIQUE DE CONFIDENTIALITÉ.
             </p>
           </div>
         </div>

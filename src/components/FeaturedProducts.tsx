@@ -56,6 +56,7 @@ export function ProductCard(product: ProductCardProps) {
             "absolute top-3 right-3 md:top-5 md:right-5 z-20 transition-all duration-300 active:scale-90 p-2 rounded-full backdrop-blur-sm",
             isFavorite ? "text-gold bg-white/20" : "text-white/70 bg-black/10 hover:text-gold"
           )}
+          aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
           <Heart size={18} strokeWidth={1.5} fill={isFavorite ? "currentColor" : "none"} className="w-4 h-4 md:w-[18px] md:h-[18px]" />
         </button>
@@ -64,7 +65,10 @@ export function ProductCard(product: ProductCardProps) {
         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out hidden md:block" />
         
         <div className="absolute inset-x-0 bottom-0 p-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-out z-20 hidden md:block">
-          <button className="w-full bg-white/90 backdrop-blur-md text-primary py-4 uppercase tracking-[0.3em] text-[9px] font-bold hover:bg-gold hover:text-white transition-all duration-500 shadow-xl flex items-center justify-center gap-3">
+          <button 
+            className="w-full bg-white/90 backdrop-blur-md text-primary py-4 uppercase tracking-[0.3em] text-[9px] font-bold hover:bg-gold hover:text-white transition-all duration-500 shadow-xl flex items-center justify-center gap-3"
+            aria-label={`Aperçu rapide de ${name}`}
+          >
             <Plus size={14} /> Aperçu Rapide
           </button>
         </div>
