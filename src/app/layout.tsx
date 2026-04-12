@@ -19,8 +19,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Diamond Meubles | L'Élégance Redéfinie",
-  description: "Découvrez notre collection exclusive de mobilier de luxe. Salons, chambres et décoration d'intérieur haut de gamme au Maroc.",
+  title: "Diamontaris Meubles | Diamantez votre maison",
+  description: "Découvrez notre collection exclusive de mobilier de luxe à Rabat. Diamantez votre maison avec nos pièces d'exception haut de gamme au Maroc.",
 };
 
 export default function RootLayout({

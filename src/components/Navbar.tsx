@@ -101,7 +101,7 @@ export default function Navbar() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="text-xl md:text-2xl lg:text-3xl font-serif tracking-[-0.05em] text-primary whitespace-nowrap"
           >
-            DIAMOND <span className="text-gold font-extralight italic">MEUBLES</span>
+            DIAMONTARIS <span className="text-gold font-extralight italic">MEUBLES</span>
           </motion.div>
         </Link>
 
@@ -323,7 +323,7 @@ export default function Navbar() {
           >
             <div className="flex justify-between items-center px-6 py-6 border-b border-beige">
               <span className="text-xl font-serif tracking-tighter text-primary">
-                DIAMOND <span className="text-gold italic font-extralight">MEUBLES</span>
+                DIAMONTARIS <span className="text-gold italic font-extralight">MEUBLES</span>
               </span>
               <button 
                 className="p-2 active:rotate-90 transition-transform duration-300"
@@ -399,8 +399,8 @@ export default function Navbar() {
             <div className="p-8 bg-[#FAFAFA] border-t border-beige space-y-6">
               <div className="flex justify-between items-center">
                 <div className="space-y-1">
-                  <p className="text-[10px] uppercase tracking-widest font-bold">Showroom Casablanca</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Ouvert 7j/7 • 10h - 20h</p>
+                  <p className="text-[10px] uppercase tracking-widest font-bold">Showroom Rabat</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Quartier Takaddoum • 9h - 18h</p>
                 </div>
                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="p-3 bg-white border border-beige rounded-full">
                   <MapPin size={18} className="text-gold" />

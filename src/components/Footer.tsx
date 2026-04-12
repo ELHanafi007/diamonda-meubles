@@ -10,10 +10,10 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="space-y-6">
             <Link href="/" className="text-2xl font-serif tracking-tighter text-primary uppercase">
-              DIAMOND <span className="text-gold italic font-light">MEUBLES</span>
+              DIAMONTARIS <span className="text-gold italic font-light">MEUBLES</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed font-light">
-              L'excellence du mobilier de luxe au Maroc. Créateur d'ambiances uniques et de pièces d'exception pour sublimer votre intérieur.
+              L'excellence du mobilier de luxe au Maroc. Diamantez votre maison avec nos pièces d'exception et nos ambiances uniques.
             </p>
             <div className="flex space-x-5">
               <Link href="#" className="text-primary hover:text-gold transition-colors"><MessageCircle size={20} strokeWidth={1.5} /></Link>
@@ -57,12 +57,12 @@ export default function Footer() {
               <li className="flex items-start gap-4">
                 <MapPin size={18} className="text-gold shrink-0 mt-1" />
                 <span className="text-sm text-muted-foreground leading-relaxed font-light">
-                  124 Boulevard d'Anfa, <br />Casablanca, Maroc
+                  Quartier Takaddoum, <br />Rabat, Maroc
                 </span>
               </li>
               <li className="flex items-center gap-4">
                 <Phone size={18} className="text-gold shrink-0" />
-                <span className="text-sm text-muted-foreground font-light">+212 522 00 00 00</span>
+                <span className="text-sm text-muted-foreground font-light">+212 600 00 00 00</span>
               </li>
             </ul>
           </div>
@@ -70,7 +70,7 @@ export default function Footer() {
 
         <div className="pt-12 border-t border-beige flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground">
-            © {new Date().getFullYear()} DIAMOND MEUBLES. TOUS DROITS RÉSERVÉS.
+            © {new Date().getFullYear()} DIAMONTARIS MEUBLES. TOUS DROITS RÉSERVÉS.
           </p>
           <div className="flex space-x-8">
             <Link href="#" className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground hover:text-gold">Mentions Légales</Link>

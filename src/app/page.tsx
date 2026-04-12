@@ -50,7 +50,7 @@ export default function Home() {
               <div className="space-y-4">
                 <motion.span 
                   initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   className="text-gold uppercase tracking-[0.4em] text-[10px] md:text-xs font-bold block"
                 >
@@ -76,7 +76,7 @@ export default function Home() {
                 transition={{ duration: 1, delay: 0.8 }}
                 className="text-muted-foreground leading-relaxed text-lg md:text-xl font-light max-w-xl"
               >
-                Chez Diamond Meubles, nous ne vendons pas seulement du mobilier. Nous concevons des expériences sensorielles où chaque courbe, chaque texture et chaque matériau est choisi pour sublimer votre quotidien. 
+                Chez Diamontaris Meubles, nous ne vendons pas seulement du mobilier. Nous concevons des expériences sensorielles où chaque courbe, chaque texture et chaque matériau est choisi pour sublimer votre quotidien. 
               </motion.p>
 
               <motion.div 
@@ -120,11 +120,11 @@ export default function Home() {
           >
             <span className="text-gold text-6xl md:text-8xl font-serif mb-12 block opacity-30">“</span>
             <p className="text-2xl md:text-5xl font-serif italic leading-[1.3] text-primary/90 mb-16 tracking-tight">
-              « Le luxe n'est pas une question de prix, mais de sentiment. Diamond Meubles a transformé notre maison en un sanctuaire d'élégance absolue. »
+              « Le luxe n'est pas une question de prix, mais de sentiment. Diamontaris Meubles a transformé notre maison en un sanctuaire d'élégance absolue. »
             </p>
             <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-[1px] bg-gold" />
-              <span className="uppercase tracking-[0.5em] text-[10px] md:text-xs text-muted-foreground font-bold">Mme. Benjelloun, Casablanca</span>
+              <span className="uppercase tracking-[0.5em] text-[10px] md:text-xs text-muted-foreground font-bold">Mme. Benjelloun, Rabat</span>
             </div>
           </motion.div>
         </div>
@@ -168,7 +168,7 @@ export default function Home() {
               transition={{ delay: 1.2 }}
               className="text-white/50 text-xs md:text-sm uppercase tracking-[0.4em] max-w-lg mx-auto leading-relaxed"
             >
-              Nos conseillers vous accompagnent dans la réalisation de vos projets les plus ambitieux.
+              Diamantez votre maison. Nos conseillers vous accompagnent dans la réalisation de vos projets les plus ambitieux.
             </motion.p>
             
             <motion.div 
