@@ -26,12 +26,11 @@ export function generateProductMetadata(product: any): Metadata {
         height: 630,
         alt: product.name,
       }],
-      type: "product",
     },
     other: {
-      "og:product:availability": product.inStock ? "in stock" : "out of stock",
-      "og:product:price": product.price,
-      "og:product:currency": "MAD",
+      "product:availability": product.inStock ? "in stock" : "out of stock",
+      "product:price:amount": product.price,
+      "product:price:currency": "MAD",
     },
   };
 }
