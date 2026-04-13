@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { ProductCard } from "@/components/FeaturedProducts";
-import { PRODUCTS } from "@/lib/products";
+import { Product, PRODUCTS } from "@/lib/products";
 import { useWishlist } from "@/lib/WishlistContext";
 import { cn } from "@/lib/utils";
 
