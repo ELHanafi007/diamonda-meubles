@@ -7,22 +7,21 @@ export async function middleware(request: NextRequest) {
   // Security Headers for all responses
   const response = NextResponse.next();
 
-  // Content Security Policy
+  // Content Security Policy - relaxed for Next.js compatibility
   response.headers.set(
     'Content-Security-Policy',
     [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wa.me https://api.resend.com https://maps.googleapis.com",
+      "default-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data:",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wa.me",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' blob: data: https://images.unsplash.com https://api.resend.com https://maps.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://api.resend.com https://wa.me https://maps.googleapis.com",
+      "img-src 'self' blob: data: https://images.unsplash.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "connect-src 'self' https://api.resend.com https://wa.me",
       "frame-src 'self'",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'none'",
-      "upgrade-insecure-requests",
     ].join('; ')
   );
 
