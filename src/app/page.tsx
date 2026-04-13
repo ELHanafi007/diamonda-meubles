@@ -9,6 +9,7 @@ import TextReveal from "@/components/TextReveal";
 import Atelier from "@/components/Atelier";
 import Showroom from "@/components/Showroom";
 import Newsletter from "@/components/Newsletter";
+import TrustAndFAQ from "@/components/TrustAndFAQ";
 import Link from "next/link";
 
 export default function Home() {
@@ -108,6 +109,8 @@ export default function Home() {
       <div id="showroom">
         <Showroom />
       </div>
+
+      <TrustAndFAQ />
 
       {/* Testimonials - Refined Minimalist */}
       <section className="py-32 md:py-48 bg-white px-6">

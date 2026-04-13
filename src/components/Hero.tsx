@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import TextReveal from "./TextReveal";
 import Link from "next/link";
 
@@ -14,14 +15,17 @@ export default function Hero() {
         transition={{ duration: 15, ease: [0.22, 1, 0.36, 1] }}
         className="absolute inset-0 z-0"
       >
-        <div 
-          className="absolute inset-0 bg-black/40 z-10" 
+        <div
+          className="absolute inset-0 bg-black/40 z-10"
           aria-hidden="true"
         />
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000"
-          alt="Luxury Living Room"
-          className="h-full w-full object-cover select-none"
+          alt="Luxury Living Room - Diamontaris Meubles Showroom"
+          fill
+          className="object-cover select-none"
+          priority
+          quality={90}
         />
       </motion.div>
 

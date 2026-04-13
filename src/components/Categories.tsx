@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import TextReveal from "./TextReveal";
@@ -13,7 +14,7 @@ export default function Categories() {
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row items-baseline justify-between mb-16 gap-8">
           <div className="max-w-2xl">
-            <motion.span 
+            <motion.span
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -21,12 +22,12 @@ export default function Categories() {
             >
               L'Art du Design
             </motion.span>
-            <TextReveal 
-              text="Inspiration par Pièce" 
+            <TextReveal
+              text="Inspiration par Pièce"
               className="text-4xl md:text-6xl font-serif leading-tight text-primary"
             />
           </div>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -55,12 +56,14 @@ export default function Categories() {
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full h-full"
+                  className="w-full h-full relative"
                 >
-                  <img
+                  <Image
                     src={cat.image}
                     alt={cat.name}
-                    className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 ease-in-out"
+                    fill
+                    className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 ease-in-out"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </motion.div>
                 

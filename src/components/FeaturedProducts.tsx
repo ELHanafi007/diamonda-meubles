@@ -2,11 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TextReveal from "./TextReveal";
 import { Product, PRODUCTS } from "@/lib/products";
 import { useWishlist } from "@/lib/WishlistContext";
+import { useToast } from "@/components/ToastProvider";
 
 interface ProductCardProps extends Product {
   className?: string;
@@ -15,7 +17,8 @@ interface ProductCardProps extends Product {
 export function ProductCard(product: ProductCardProps) {
   const { id, name, price, image, category, className } = product;
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  
+  const { success, info } = useToast();
+
   const isFavorite = isInWishlist(id);
 
   const toggleWishlist = (e: React.MouseEvent) => {
@@ -23,8 +26,10 @@ export function ProductCard(product: ProductCardProps) {
     e.stopPropagation();
     if (isFavorite) {
       removeFromWishlist(id);
+      info(`${name} retiré des favoris`);
     } else {
       addToWishlist(product);
+      success(`${name} ajouté aux favoris`);
     }
   };
 
@@ -36,21 +41,21 @@ export function ProductCard(product: ProductCardProps) {
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className={cn("group flex flex-col h-full", className)}
     >
-      <Link 
-        href={`/product/${id}`} 
+      <Link
+        href={`/product/${id}`}
         className="block relative aspect-[3/4] overflow-hidden bg-beige mb-4 md:mb-8"
       >
         {/* Subtle Image Zoom */}
-        <motion.img
-          whileHover={{ scale: 1.08 }}
-          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+        <Image
           src={image}
           alt={name}
-          className="w-full h-full object-cover transition-all duration-1000 ease-in-out select-none"
+          fill
+          className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-108"
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
 
         {/* Favorite Button */}
-        <button 
+        <button
           onClick={toggleWishlist}
           className={cn(
             "absolute top-3 right-3 md:top-5 md:right-5 z-20 transition-all duration-300 active:scale-90 p-2 rounded-full backdrop-blur-sm",
@@ -63,9 +68,9 @@ export function ProductCard(product: ProductCardProps) {
 
         {/* Quick View Overlay - Hidden on small mobile */}
         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out hidden md:block" />
-        
+
         <div className="absolute inset-x-0 bottom-0 p-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-out z-20 hidden md:block">
-          <button 
+          <button
             className="w-full bg-white/90 backdrop-blur-md text-primary py-4 uppercase tracking-[0.3em] text-[9px] font-bold hover:bg-gold hover:text-white transition-all duration-500 shadow-xl flex items-center justify-center gap-3"
             aria-label={`Aperçu rapide de ${name}`}
           >
@@ -73,7 +78,7 @@ export function ProductCard(product: ProductCardProps) {
           </button>
         </div>
       </Link>
-      
+
       <div className="flex flex-col space-y-2 md:space-y-3 mt-auto">
         <div className="flex items-center justify-between gap-2 md:gap-4">
           <span className="text-[8px] md:text-[10px] uppercase tracking-[0.2em] md:tracking-[0.3em] text-gold font-semibold truncate">{category}</span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Lock, ArrowRight, Loader2 } from "lucide-react";
@@ -8,23 +8,48 @@ import { Lock, ArrowRight, Loader2 } from "lucide-react";
 export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Check if already authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/api/admin/verify");
+        if (response.ok) {
+          router.push("/admin/dashboard");
+        }
+      } catch {
+        // Not authenticated, stay on login page
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simple mock auth for the prototype
-    // In production, use real auth like NextAuth
-    setTimeout(() => {
-      if (password === "admin123") {
-        localStorage.setItem("admin_token", "true");
+    setError(null);
+
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.ok) {
         router.push("/admin/dashboard");
+        router.refresh();
       } else {
-        alert("Mot de passe incorrect");
-        setIsLoading(false);
+        const data = await response.json();
+        setError(data.error || "Mot de passe incorrect");
       }
-    }, 1000);
+    } catch {
+      setError("Erreur de connexion. Veuillez réessayer.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,7 +84,13 @@ export default function AdminLogin() {
             </div>
           </div>
 
-          <button 
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs font-medium mb-6">
+              {error}
+            </div>
+          )}
+
+          <button
             type="submit"
             disabled={isLoading}
             className="w-full bg-black text-white py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-all duration-500 flex items-center justify-center gap-4 group disabled:bg-primary/20"

@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Disallow admin routes
+Disallow: /admin/
+
+# Allow important routes
+Allow: /shop
+Allow: /about
+Allow: /contact
+Allow: /category/
+Allow: /product/
+
+# Sitemap location
+Sitemap: https://diamontaris.ma/sitemap.xml
+
+# Crawl delay for polite crawling
+Crawl-delay: 1

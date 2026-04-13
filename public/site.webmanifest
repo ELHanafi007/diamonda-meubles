@@ -1,0 +1,19 @@
+{
+  "name": "Diamontaris Meubles - Mobilier de Luxe à Rabat",
+  "short_name": "Diamontaris",
+  "description": "Collection exclusive de mobilier de luxe à Rabat. Pièces d'exception haut de gamme au Maroc.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#C5A022",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"],
+  "lang": "fr-MA"
+}

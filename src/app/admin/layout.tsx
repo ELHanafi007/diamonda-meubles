@@ -18,13 +18,21 @@ export default function AdminLayout({
 
   useEffect(() => {
     if (!isLoginPage) {
-      const token = localStorage.getItem("admin_token");
-      if (token !== "true") {
-        router.push("/admin");
-      } else {
-        setAuthorized(true);
-      }
-      setLoading(false);
+      const checkAuth = async () => {
+        try {
+          const response = await fetch("/api/admin/verify");
+          if (!response.ok) {
+            router.push("/admin");
+          } else {
+            setAuthorized(true);
+          }
+        } catch {
+          router.push("/admin");
+        }
+        setLoading(false);
+      };
+      
+      checkAuth();
     }
   }, [isLoginPage, router]);
 
@@ -41,7 +49,7 @@ export default function AdminLayout({
   }
 
   if (!authorized) {
-    return null; // Prevents flash of content before redirect
+    return null;
   }
 
   return (
