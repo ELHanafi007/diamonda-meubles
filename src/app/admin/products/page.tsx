@@ -6,6 +6,7 @@ import { CATEGORIES } from "@/lib/categories";
 import { Plus, Search, Edit3, Trash2, Filter, Archive, X, Check, Package, Layers, Info, Ruler, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
@@ -13,9 +14,75 @@ export default function AdminProducts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
   
   // Tab state: Active vs Archived
   const [activeTab, setActiveTab] = useState<'all' | 'archived'>('all');
+
+  const handleImageUpload = async (file: File) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from('product_images')
+      .upload(fileName, file);
+
+    if (error) throw error;
+    
+    const { data: publicUrlData } = supabase.storage
+      .from('product_images')
+      .getPublicUrl(fileName);
+      
+    return publicUrlData.publicUrl;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    
+    try {
+      let imageUrl = editingProduct?.image;
+      if (imageFile) {
+        imageUrl = await handleImageUpload(imageFile);
+      }
+
+      const productData = {
+        name: formData.get('name'),
+        price: formData.get('price'),
+        category: formData.get('category'),
+        material: formData.get('material'),
+        dimensions: formData.get('dimensions'),
+        weight: formData.get('weight'),
+        image: imageUrl,
+        description: formData.get('description'),
+      };
+
+      if (editingProduct) {
+        const { error } = await supabase
+          .from('products')
+          .update(productData)
+          .eq('id', editingProduct.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('products')
+          .insert([productData]);
+        if (error) throw error;
+      }
+
+      setIsModalOpen(false);
+      setImageFile(null);
+      // Refresh local list or reload page
+      alert("Produit sauvegardé avec succès");
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la sauvegarde");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -196,7 +263,7 @@ export default function AdminProducts() {
                 <button onClick={() => setIsModalOpen(false)} className="p-2 hover:rotate-90 transition-transform duration-500"><X size={24} /></button>
               </div>
 
-              <form className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12" onSubmit={(e) => e.preventDefault()}>
+              <form className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12" onSubmit={handleSubmit}>
                 {/* Section 1: Base Info */}
                 <div className="space-y-8">
                   <div className="flex items-center gap-2 text-gold">
@@ -206,11 +273,11 @@ export default function AdminProducts() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Nom du produit</label>
-                      <input type="text" defaultValue={editingProduct?.name} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-xl" placeholder="Ex: Table Grand Palais" />
+                      <input name="name" type="text" defaultValue={editingProduct?.name} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-xl" placeholder="Ex: Table Grand Palais" />
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Prix Public (MAD)</label>
-                      <input type="text" defaultValue={editingProduct?.price} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-xl" placeholder="Ex: 28.500" />
+                      <input name="price" type="text" defaultValue={editingProduct?.price} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-xl" placeholder="Ex: 28.500" />
                     </div>
                   </div>
                 </div>
@@ -224,13 +291,13 @@ export default function AdminProducts() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Catégorie</label>
-                      <select className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg appearance-none">
+                      <select name="category" className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg appearance-none">
                         {CATEGORIES.map(c => <option key={c.id} selected={editingProduct?.category === c.name}>{c.name}</option>)}
                       </select>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Matériaux Nobles</label>
-                      <input type="text" defaultValue={editingProduct?.material} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="Ex: Noyer, Marbre, Bronze" />
+                      <input name="material" type="text" defaultValue={editingProduct?.material} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="Ex: Noyer, Marbre, Bronze" />
                     </div>
                   </div>
                 </div>
@@ -241,14 +308,29 @@ export default function AdminProducts() {
                     <Ruler size={14} />
                     <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Détails & Dimensions</span>
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-2">
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Dimensions</label>
+                      <input name="dimensions" type="text" defaultValue={editingProduct?.dimensions} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="Ex: L120 x P60 x H45 cm" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Poids</label>
+                      <input name="weight" type="text" defaultValue={editingProduct?.weight} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="Ex: 15 kg" />
+                    </div>
+                  </div>
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">URL de l'image haute définition</label>
-                      <input type="text" defaultValue={editingProduct?.image} className="w-full bg-[#FAFAFA] border border-beige p-4 outline-none focus:border-gold transition-colors text-xs" placeholder="https://images.unsplash.com/..." />
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Image haute définition</label>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                        className="w-full bg-[#FAFAFA] border border-beige p-4 outline-none focus:border-gold transition-colors text-xs" 
+                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Description éditoriale</label>
-                      <textarea rows={4} defaultValue={editingProduct?.description} className="w-full bg-[#FAFAFA] border border-beige p-4 outline-none focus:border-gold transition-colors font-light text-sm resize-none" placeholder="Décrivez l'âme de cette pièce..." />
+                      <textarea name="description" rows={4} defaultValue={editingProduct?.description} className="w-full bg-[#FAFAFA] border border-beige p-4 outline-none focus:border-gold transition-colors font-light text-sm resize-none" placeholder="Décrivez l'âme de cette pièce..." />
                     </div>
                   </div>
                 </div>
@@ -256,12 +338,11 @@ export default function AdminProducts() {
                 {/* Footer Actions */}
                 <div className="pt-8 flex gap-4">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 bg-[#FAFAFA] text-primary py-6 uppercase tracking-[0.2em] text-[10px] font-bold hover:bg-beige transition-all">Annuler</button>
-                  <button type="submit" className="flex-[2] bg-black text-white py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-all duration-500 shadow-2xl">
-                    {editingProduct ? "Confirmer les modifications" : "Publier au catalogue"}
+                  <button type="submit" disabled={loading} className="flex-[2] bg-black text-white py-6 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold transition-all duration-500 shadow-2xl">
+                    {loading ? "Traitement..." : (editingProduct ? "Confirmer les modifications" : "Publier au catalogue")}
                   </button>
                 </div>
-              </form>
-            </motion.div>
+              </form>            </motion.div>
           </div>
         )}
       </AnimatePresence>

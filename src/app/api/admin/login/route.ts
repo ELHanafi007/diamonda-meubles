@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-const ADMIN_PASSWORD = 'admin123'; // In production, use environment variable
+const ADMIN_PASSWORD = '15139922'; // In production, use environment variable
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 const SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'diamontaris-secret-key-2024';
 
