@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Menu, X, ShoppingBag, Search, ChevronDown, MapPin, ArrowRight,
-  Couch, Armchair, Home, Moon, Flower2, DoorOpen, Building2, User,
+  Sofa, Armchair, Home, Moon, Flower, DoorClosed, Building2, User,
   Plus, Minus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,7 +17,7 @@ import { PRODUCTS } from "@/lib/products";
 const MOBILE_CATEGORIES = [
   {
     name: "Salon et réception",
-    icon: <Couch size={20} strokeWidth={1} />,
+    icon: <Sofa size={20} strokeWidth={1} />,
     subCategories: [
       "Canapés", "Consoles", "Fauteuils", "Meubles TV", "Salons", "Tables d'appoint", "Tables basses"
     ],
@@ -45,14 +45,14 @@ const MOBILE_CATEGORIES = [
   },
   {
     name: "Décoration",
-    icon: <Flower2 size={20} strokeWidth={1} />,
+    icon: <Flower size={20} strokeWidth={1} />,
     subCategories: [
       "Miroirs", "Tableaux", "Vases, Bougeoirs et Plateaux", "Lampes et Luminaires", "Objets déco", "Parfum & Maison"
     ],
   },
   {
     name: "Extérieur",
-    icon: <DoorOpen size={20} strokeWidth={1} />,
+    icon: <DoorClosed size={20} strokeWidth={1} />,
     subCategories: [
       "Salons de jardin", "Table à manger de jardin", "Chaises d'extérieur", "Transats"
     ],
