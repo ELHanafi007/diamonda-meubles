@@ -46,130 +46,132 @@ export default function Navbar() {
   }, [searchQuery]);
 
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        isScrolled 
-          ? "bg-white/90 backdrop-blur-xl py-3 shadow-[0_2px_20px_-10px_rgba(0,0,0,0.1)]" 
-          : "bg-transparent py-8 md:py-10"
-      )}
-      onMouseLeave={() => setShowMegaMenu(false)}
-    >
-      <div className="container mx-auto px-6 flex items-center justify-between">
-        {/* Mobile Menu Button */}
-        <button
-          className="lg:hidden text-primary p-2 -ml-2 transition-transform active:scale-95"
-          onClick={() => setMobileMenuOpen(true)}
-          aria-label="Ouvrir le menu principal"
-        >
-          <Menu size={22} />
-        </button>
+    <>
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          isScrolled 
+            ? "bg-white/90 backdrop-blur-xl py-3 shadow-[0_2px_20px_-10px_rgba(0,0,0,0.1)]" 
+            : "bg-transparent py-8 md:py-10"
+        )}
+        onMouseLeave={() => setShowMegaMenu(false)}
+      >
+        <div className="container mx-auto px-6 flex items-center justify-between">
+          {/* Mobile Menu Button */}
+          <button
+            className="lg:hidden text-primary p-2 -ml-2 transition-transform active:scale-95"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Ouvrir le menu principal"
+          >
+            <Menu size={22} />
+          </button>
 
-        {/* Navigation Links - Desktop Left */}
-        <div className="hidden lg:flex items-center space-x-10 flex-1">
-          {navLinks.slice(1, 3).map((link) => (
-            <div 
-              key={link.name}
-              onMouseEnter={() => link.hasDropdown && setShowMegaMenu(true)}
-              className="relative py-2"
+          {/* Navigation Links - Desktop Left */}
+          <div className="hidden lg:flex items-center space-x-10 flex-1">
+            {navLinks.slice(1, 3).map((link) => (
+              <div 
+                key={link.name}
+                onMouseEnter={() => link.hasDropdown && setShowMegaMenu(true)}
+                className="relative py-2"
+              >
+                <Link
+                  href={link.href}
+                  className={cn(
+                    "text-[10px] uppercase tracking-[0.25em] font-medium transition-all duration-500 hover:text-gold flex items-center gap-1 group",
+                    pathname === link.href ? "text-gold" : "text-primary/80"
+                  )}
+                >
+                  {link.name}
+                  {link.hasDropdown && <ChevronDown size={10} className={cn("transition-transform duration-500", showMegaMenu && "rotate-180")} />}
+                  <span className={cn(
+                    "absolute -bottom-1 left-0 h-[1px] bg-gold transition-all duration-500 ease-out",
+                    pathname === link.href ? "w-full" : "w-0 group-hover:w-full"
+                  )} />
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex-1 flex justify-center"
+            aria-label="Retour à l'accueil Diamontaris Meubles"
+          >
+            <motion.div
+              animate={{ scale: isScrolled ? 0.9 : 1 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="text-xl md:text-2xl lg:text-3xl font-serif tracking-[-0.05em] text-primary whitespace-nowrap"
             >
+              DIAMONTARIS <span className="text-gold font-extralight italic">MEUBLES</span>
+            </motion.div>
+          </Link>
+
+          {/* Navigation Links - Desktop Right */}
+          <div className="hidden lg:flex items-center justify-end space-x-10 flex-1">
+            {navLinks.slice(3).map((link) => (
               <Link
+                key={link.name}
                 href={link.href}
                 className={cn(
-                  "text-[10px] uppercase tracking-[0.25em] font-medium transition-all duration-500 hover:text-gold flex items-center gap-1 group",
+                  "text-[10px] uppercase tracking-[0.25em] font-medium transition-all duration-500 hover:text-gold relative group",
                   pathname === link.href ? "text-gold" : "text-primary/80"
                 )}
               >
                 {link.name}
-                {link.hasDropdown && <ChevronDown size={10} className={cn("transition-transform duration-500", showMegaMenu && "rotate-180")} />}
                 <span className={cn(
                   "absolute -bottom-1 left-0 h-[1px] bg-gold transition-all duration-500 ease-out",
                   pathname === link.href ? "w-full" : "w-0 group-hover:w-full"
                 )} />
               </Link>
+            ))}
+            <div className="flex items-center space-x-6 ml-4">
+              <button 
+                onClick={() => setSearchOpen(true)}
+                className="text-primary/70 hover:text-gold transition-colors duration-300 active:scale-90"
+                aria-label="Ouvrir la recherche"
+              >
+                <Search size={18} strokeWidth={1.5} />
+              </button>
+              <Link 
+                href="/wishlist"
+                className="text-primary/70 hover:text-gold transition-colors duration-300 active:scale-90 relative"
+                aria-label={`Voir mes coups de cœur (${wishlist.length} articles)`}
+              >
+                <ShoppingBag size={18} strokeWidth={1.5} />
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-gold text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Logo */}
-        <Link
-          href="/"
-          className="flex-1 flex justify-center"
-          aria-label="Retour à l'accueil Diamontaris Meubles"
-        >
-          <motion.div
-            animate={{ scale: isScrolled ? 0.9 : 1 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-xl md:text-2xl lg:text-3xl font-serif tracking-[-0.05em] text-primary whitespace-nowrap"
-          >
-            DIAMONTARIS <span className="text-gold font-extralight italic">MEUBLES</span>
-          </motion.div>
-        </Link>
-
-        {/* Navigation Links - Desktop Right */}
-        <div className="hidden lg:flex items-center justify-end space-x-10 flex-1">
-          {navLinks.slice(3).map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={cn(
-                "text-[10px] uppercase tracking-[0.25em] font-medium transition-all duration-500 hover:text-gold relative group",
-                pathname === link.href ? "text-gold" : "text-primary/80"
-              )}
-            >
-              {link.name}
-              <span className={cn(
-                "absolute -bottom-1 left-0 h-[1px] bg-gold transition-all duration-500 ease-out",
-                pathname === link.href ? "w-full" : "w-0 group-hover:w-full"
-              )} />
-            </Link>
-          ))}
-          <div className="flex items-center space-x-6 ml-4">
+          {/* Mobile Icons */}
+          <div className="flex lg:hidden items-center gap-4">
             <button 
               onClick={() => setSearchOpen(true)}
-              className="text-primary/70 hover:text-gold transition-colors duration-300 active:scale-90"
+              className="text-primary/80 p-2 active:scale-90 transition-transform"
               aria-label="Ouvrir la recherche"
             >
-              <Search size={18} strokeWidth={1.5} />
+              <Search size={20} strokeWidth={1.5} />
             </button>
             <Link 
               href="/wishlist"
-              className="text-primary/70 hover:text-gold transition-colors duration-300 active:scale-90 relative"
+              className="text-primary/80 p-2 -mr-2 active:scale-90 transition-transform relative"
               aria-label={`Voir mes coups de cœur (${wishlist.length} articles)`}
             >
-              <ShoppingBag size={18} strokeWidth={1.5} />
+              <ShoppingBag size={20} strokeWidth={1.5} />
               {wishlist.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gold text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold">
+                <span className="absolute top-1 right-0 bg-gold text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold">
                   {wishlist.length}
                 </span>
               )}
             </Link>
           </div>
         </div>
-
-        {/* Mobile Icons */}
-        <div className="flex lg:hidden items-center gap-4">
-          <button 
-            onClick={() => setSearchOpen(true)}
-            className="text-primary/80 p-2 active:scale-90 transition-transform"
-            aria-label="Ouvrir la recherche"
-          >
-            <Search size={20} strokeWidth={1.5} />
-          </button>
-          <Link 
-            href="/wishlist"
-            className="text-primary/80 p-2 -mr-2 active:scale-90 transition-transform relative"
-            aria-label={`Voir mes coups de cœur (${wishlist.length} articles)`}
-          >
-            <ShoppingBag size={20} strokeWidth={1.5} />
-            {wishlist.length > 0 && (
-              <span className="absolute top-1 right-0 bg-gold text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold">
-                {wishlist.length}
-              </span>
-            )}
-          </Link>
-        </div>
-      </div>
+      </nav>
 
       {/* Search Overlay */}
       <AnimatePresence>
@@ -178,7 +180,7 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-white flex flex-col"
+            className="fixed inset-0 z-[150] bg-white flex flex-col"
             role="dialog"
             aria-modal="true"
             aria-label="Barre de recherche"
@@ -426,6 +428,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }

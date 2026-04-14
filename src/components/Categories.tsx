@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import TextReveal from "./TextReveal";
+import { ArrowRight } from "lucide-react";
 
 import { CATEGORIES } from "@/lib/categories";
 
@@ -12,7 +13,7 @@ export default function Categories() {
   return (
     <section className="py-24 md:py-32 bg-white px-6 overflow-hidden">
       <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row items-baseline justify-between mb-16 gap-8">
+        <div className="flex items-end justify-between mb-12 md:mb-16">
           <div className="max-w-2xl">
             <motion.span
               initial={{ opacity: 0, x: -20 }}
@@ -23,22 +24,23 @@ export default function Categories() {
               L'Art du Design
             </motion.span>
             <TextReveal
-              text="Inspiration par Pièce"
+              text="Nos Univers"
               className="text-4xl md:text-6xl font-serif leading-tight text-primary"
             />
           </div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8 }}
-            className="text-muted-foreground text-xs md:text-sm uppercase tracking-widest max-w-xs leading-relaxed"
+          
+          <Link 
+            href="/shop" 
+            className="group flex items-center gap-2 text-primary/60 hover:text-gold transition-colors duration-300"
           >
-            Chaque espace est une page blanche que nous sublimons avec élégance.
-          </motion.p>
+            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] font-bold">Tout voir</span>
+            <div className="w-8 h-8 rounded-full border border-beige flex items-center justify-center group-hover:bg-gold group-hover:border-gold transition-all duration-500">
+              <ArrowRight size={14} className="group-hover:text-white transition-colors" />
+            </div>
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex overflow-x-auto gap-6 pb-12 no-scrollbar snap-x snap-mandatory -mx-6 px-6">
           {CATEGORIES.map((cat, idx) => (
             <motion.div
               key={cat.id}
@@ -46,7 +48,7 @@ export default function Categories() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, delay: idx * 0.05, ease: [0.22, 1, 0.36, 1] }}
-              className="relative group overflow-hidden bg-beige aspect-[4/5]"
+              className="relative group overflow-hidden bg-beige aspect-[4/5] min-w-[300px] md:min-w-[450px] snap-start"
             >
               <Link
                 href={`/category/${cat.slug}`}
