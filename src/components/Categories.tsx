@@ -3,91 +3,92 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import TextReveal from "./TextReveal";
 import { ArrowRight } from "lucide-react";
+import { PRODUCTS } from "@/lib/products";
 
-import { CATEGORIES } from "@/lib/categories";
+const DISPLAY_SUB_CATEGORIES = [
+  { name: "Buffets", filter: "Buffets / Bahuts", slug: "buffets-bahuts" },
+  { name: "Bibliothèques", filter: "Bibliothèques", slug: "bibliotheques" },
+  { name: "Tables basses", filter: "Tables basses", slug: "tables-basses" },
+];
 
 export default function Categories() {
   return (
-    <section className="py-24 md:py-32 bg-white px-6 overflow-hidden">
-      <div className="container mx-auto">
-        <div className="flex items-end justify-between mb-12 md:mb-16">
-          <div className="max-w-2xl">
-            <motion.span
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="text-gold uppercase tracking-[0.4em] text-[10px] md:text-xs mb-4 block font-semibold"
-            >
-              L'Art du Design
-            </motion.span>
-            <TextReveal
-              text="Nos Univers"
-              className="text-4xl md:text-6xl font-serif leading-tight text-primary"
-            />
-          </div>
-          
-          <Link 
-            href="/shop" 
-            className="group flex items-center gap-2 text-primary/60 hover:text-gold transition-colors duration-300"
-          >
-            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] font-bold">Tout voir</span>
-            <div className="w-8 h-8 rounded-full border border-beige flex items-center justify-center group-hover:bg-gold group-hover:border-gold transition-all duration-500">
-              <ArrowRight size={14} className="group-hover:text-white transition-colors" />
-            </div>
-          </Link>
-        </div>
+    <section className="py-12 md:py-24 bg-white overflow-hidden">
+      <div className="container mx-auto px-6">
+        <div className="space-y-20">
+          {DISPLAY_SUB_CATEGORIES.map((subCat) => {
+            const subCatProducts = PRODUCTS.filter(p => p.subCategory === subCat.filter);
+            
+            if (subCatProducts.length === 0) return null;
 
-        <div className="flex overflow-x-auto gap-6 pb-12 no-scrollbar snap-x snap-mandatory -mx-6 px-6">
-          {CATEGORIES.map((cat, idx) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: idx * 0.05, ease: [0.22, 1, 0.36, 1] }}
-              className="relative group overflow-hidden bg-beige aspect-[4/5] min-w-[300px] md:min-w-[450px] snap-start"
-            >
-              <Link
-                href={`/category/${cat.slug}`}
-                data-cursor="VOIR"
-                className="block w-full h-full"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full h-full relative"
-                >
-                  <Image
-                    src={cat.image}
-                    alt={cat.name}
-                    fill
-                    className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 ease-in-out"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                </motion.div>
-                
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700 z-10 pointer-events-none" />
-                
-                <div className="absolute bottom-8 left-8 z-20 text-white pointer-events-none">
-                  <motion.p 
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + idx * 0.05 }}
-                    className="text-[9px] md:text-[10px] uppercase tracking-[0.4em] mb-2 opacity-70 font-medium"
+            return (
+              <div key={subCat.name} className="space-y-8">
+                {/* Section Header */}
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-sans font-bold tracking-tight text-primary uppercase">
+                    {subCat.name}
+                  </h2>
+                  <Link 
+                    href={`/shop?subCategory=${subCat.slug}`}
+                    className="flex items-center gap-2 px-4 py-2 border border-beige rounded-sm text-[10px] md:text-xs font-sans font-bold uppercase tracking-widest hover:bg-beige transition-colors group"
                   >
-                    {cat.subtitle}
-                  </motion.p>
-                  <h3 className="text-2xl md:text-3xl font-serif tracking-tight leading-none group-hover:text-gold transition-colors duration-500">
-                    {cat.name}
-                  </h3>
-                  <div className="h-[1px] bg-white/30 w-full mt-4 scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
+                    Tous les {subCat.name.toLowerCase()}
+                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
-              </Link>
-            </motion.div>
-          ))}
+
+                {/* Product Grid / Horizontal Scroll */}
+                <div className="flex overflow-x-auto gap-6 pb-4 no-scrollbar snap-x snap-mandatory">
+                  {subCatProducts.map((product) => (
+                    <div 
+                      key={product.id}
+                      className="min-w-[260px] md:min-w-[320px] flex-shrink-0 snap-start group"
+                    >
+                      <Link href={`/product/${product.id}`} className="block space-y-4">
+                        {/* Product Image Wrapper */}
+                        <div className="relative aspect-[4/5] overflow-hidden bg-[#F9F9F9]">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-700"
+                            sizes="(max-width: 768px) 260px, 320px"
+                          />
+                          
+                          {/* Discount Badge */}
+                          {product.discount && (
+                            <div className="absolute top-4 right-4 bg-white px-2 py-1 shadow-sm">
+                              <span className="text-[10px] font-bold text-red-600">
+                                -{product.discount}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="space-y-1">
+                          <h3 className="text-xs md:text-sm font-sans font-bold tracking-widest uppercase text-primary truncate">
+                            {product.name}
+                          </h3>
+                          <div className="flex items-center gap-3">
+                            {product.oldPrice && (
+                              <span className="text-[10px] md:text-xs text-muted-foreground line-through">
+                                {product.oldPrice} Dh
+                              </span>
+                            )}
+                            <span className="text-xs md:text-sm font-sans font-bold text-red-600">
+                              {product.price} Dh
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

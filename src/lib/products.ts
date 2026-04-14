@@ -2,6 +2,8 @@ export interface Product {
   id: string;
   name: string;
   price: string;
+  oldPrice?: string;
+  discount?: number;
   image: string;
   images?: string[];
   category: string;
@@ -24,7 +26,9 @@ export const PRODUCTS: Product[] = [
   {
     id: "s1",
     name: "Canapé Royal Velours",
-    price: "18.500",
+    price: "15.540",
+    oldPrice: "18.500",
+    discount: 16,
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1200",
     images: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1200",
@@ -48,7 +52,9 @@ export const PRODUCTS: Product[] = [
   {
     id: "s2",
     name: "Table Basse Marbre Noir",
-    price: "4.200",
+    price: "3.780",
+    oldPrice: "4.200",
+    discount: 10,
     image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1200",
     images: [
       "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1200",
@@ -67,6 +73,65 @@ export const PRODUCTS: Product[] = [
     customizable: false,
     warranty: "10 ans",
     deliveryTime: "2-3 semaines"
+  },
+  {
+    id: "s4",
+    name: "Table Basse Ovale",
+    price: "2.900",
+    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1200",
+    category: "Salon",
+    subCategory: "Tables basses",
+    material: "Bois de Frêne",
+    description: "Un design épuré.",
+    inStock: true,
+  },
+  {
+    id: "sm3",
+    name: "Buffet Minimaliste",
+    price: "7.200",
+    oldPrice: "8.500",
+    discount: 15,
+    image: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1200",
+    category: "Salle à manger",
+    subCategory: "Buffets / Bahuts",
+    material: "Chêne Clair",
+    description: "Buffet au design scandinave.",
+    inStock: true,
+  },
+  {
+    id: "sm4",
+    name: "Buffet Prestige",
+    price: "12.000",
+    image: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1200",
+    category: "Salle à manger",
+    subCategory: "Buffets / Bahuts",
+    material: "Noyer",
+    description: "L'élégance absolue.",
+    inStock: true,
+  },
+  {
+    id: "b2",
+    name: "Bibliothèque Murale",
+    price: "5.500",
+    oldPrice: "6.800",
+    discount: 19,
+    image: "https://images.unsplash.com/photo-1594620302200-9a7622d4a13c?q=80&w=1200",
+    category: "Bureau",
+    subCategory: "Bibliothèques",
+    material: "Métal & Bois",
+    description: "Structure industrielle.",
+    inStock: true,
+  },
+  {
+    id: "b3",
+    name: "Bibliothèque Chêne",
+    price: "8.900",
+    image: "https://images.unsplash.com/photo-1594620302200-9a7622d4a13c?q=80&w=1200",
+    category: "Bureau",
+    subCategory: "Bibliothèques",
+    material: "Chêne Massif",
+    description: "Qualité artisanale.",
+    inStock: true,
   },
   {
     id: "s3",
