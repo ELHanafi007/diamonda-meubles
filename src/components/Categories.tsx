@@ -3,90 +3,134 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShoppingCart } from "lucide-react";
 import { PRODUCTS } from "@/lib/products";
-
-const DISPLAY_SUB_CATEGORIES = [
-  { name: "Buffets", filter: "Buffets / Bahuts", slug: "buffets-bahuts" },
-  { name: "Bibliothèques", filter: "Bibliothèques", slug: "bibliotheques" },
-  { name: "Tables basses", filter: "Tables basses", slug: "tables-basses" },
-];
+import { CATEGORIES } from "@/lib/categories";
 
 export default function Categories() {
+  // Extract all sub-categories from the CATEGORIES library
+  const ALL_SUB_CATEGORIES = CATEGORIES.flatMap(cat => 
+    cat.subCategories.map(sub => ({
+      name: sub.name,
+      filter: sub.name, // Usually p.subCategory matches sub.name
+      slug: sub.slug,
+      categorySlug: cat.slug
+    }))
+  );
+
   return (
-    <section className="py-12 md:py-24 bg-white overflow-hidden">
+    <section className="py-16 md:py-28 bg-white overflow-hidden">
       <div className="container mx-auto px-6">
-        <div className="space-y-20">
-          {DISPLAY_SUB_CATEGORIES.map((subCat) => {
-            const subCatProducts = PRODUCTS.filter(p => p.subCategory === subCat.filter);
+        <div className="space-y-24 md:space-y-32">
+          {ALL_SUB_CATEGORIES.map((subCat) => {
+            // Filter products that belong to this sub-category
+            // We use a flexible check to handle variations like "Buffets / Bahuts"
+            const subCatProducts = PRODUCTS.filter(p => 
+              p.subCategory.toLowerCase().includes(subCat.name.toLowerCase().split(' ')[0])
+            ).slice(0, 8); // Limit to 8 products per section for the home page
             
             if (subCatProducts.length === 0) return null;
 
             return (
-              <div key={subCat.name} className="space-y-8">
+              <motion.div 
+                key={subCat.name} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="space-y-10"
+              >
                 {/* Section Header */}
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl md:text-3xl font-sans font-bold tracking-tight text-primary uppercase">
-                    {subCat.name}
-                  </h2>
+                <div className="flex items-end justify-between border-b border-beige pb-6">
+                  <div className="space-y-2">
+                    <h2 className="text-3xl md:text-5xl font-serif tracking-tight text-primary">
+                      {subCat.name}
+                    </h2>
+                    <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-gold font-bold">
+                      Collection Signature
+                    </p>
+                  </div>
                   <Link 
-                    href={`/shop?subCategory=${subCat.slug}`}
-                    className="flex items-center gap-2 px-4 py-2 border border-beige rounded-sm text-[10px] md:text-xs font-sans font-bold uppercase tracking-widest hover:bg-beige transition-colors group"
+                    href={`/category/${subCat.categorySlug}?sub=${subCat.slug}`}
+                    className="flex items-center gap-3 px-6 py-3 bg-primary text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] hover:bg-gold transition-all duration-500 group"
                   >
-                    Tous les {subCat.name.toLowerCase()}
+                    Voir tout
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
 
-                {/* Product Grid / Horizontal Scroll */}
-                <div className="flex overflow-x-auto gap-6 pb-4 no-scrollbar snap-x snap-mandatory">
+                {/* Product Horizontal Scroll */}
+                <div className="flex overflow-x-auto gap-8 pb-8 no-scrollbar snap-x snap-mandatory -mx-6 px-6">
                   {subCatProducts.map((product) => (
                     <div 
                       key={product.id}
-                      className="min-w-[260px] md:min-w-[320px] flex-shrink-0 snap-start group"
+                      className="min-w-[280px] md:min-w-[380px] flex-shrink-0 snap-start group"
                     >
-                      <Link href={`/product/${product.id}`} className="block space-y-4">
+                      <Link href={`/product/${product.id}`} className="block space-y-6">
                         {/* Product Image Wrapper */}
-                        <div className="relative aspect-[4/5] overflow-hidden bg-[#F9F9F9]">
+                        <div className="relative aspect-[4/5] overflow-hidden bg-[#FDFDFD] shadow-sm">
                           <Image
                             src={product.image}
                             alt={product.name}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-700"
-                            sizes="(max-width: 768px) 260px, 320px"
+                            className="object-cover group-hover:scale-110 transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                            sizes="(max-width: 768px) 280px, 380px"
                           />
                           
                           {/* Discount Badge */}
                           {product.discount && (
-                            <div className="absolute top-4 right-4 bg-white px-2 py-1 shadow-sm">
-                              <span className="text-[10px] font-bold text-red-600">
-                                -{product.discount}%
-                              </span>
+                            <div className="absolute top-6 right-6 bg-red-600 text-white px-3 py-1.5 font-bold text-[10px] tracking-tighter">
+                              -{product.discount}%
                             </div>
                           )}
+
+                          {/* Hover Overlay */}
+                          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          
+                          <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                             <div className="bg-white/90 backdrop-blur-md p-4 text-center text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 border border-beige">
+                               <ShoppingCart size={14} /> Aperçu Rapide
+                             </div>
+                          </div>
                         </div>
 
                         {/* Product Info */}
-                        <div className="space-y-1">
-                          <h3 className="text-xs md:text-sm font-sans font-bold tracking-widest uppercase text-primary truncate">
-                            {product.name}
-                          </h3>
-                          <div className="flex items-center gap-3">
-                            {product.oldPrice && (
-                              <span className="text-[10px] md:text-xs text-muted-foreground line-through">
-                                {product.oldPrice} Dh
-                              </span>
-                            )}
-                            <span className="text-xs md:text-sm font-sans font-bold text-red-600">
-                              {product.price} Dh
-                            </span>
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-start gap-4">
+                            <h3 className="text-sm md:text-lg font-serif tracking-tight text-primary leading-tight group-hover:text-gold transition-colors duration-500">
+                              {product.name}
+                            </h3>
+                            <div className="text-right">
+                              <p className="text-sm md:text-base font-bold text-primary">
+                                {product.price} <span className="text-[10px] font-medium ml-0.5">Dh</span>
+                              </p>
+                              {product.oldPrice && (
+                                <p className="text-[10px] md:text-xs text-muted-foreground line-through opacity-60">
+                                  {product.oldPrice} Dh
+                                </p>
+                              )}
+                            </div>
                           </div>
+                          <div className="h-[1px] bg-beige w-0 group-hover:w-full transition-all duration-700" />
                         </div>
                       </Link>
                     </div>
                   ))}
+                  
+                  {/* "See More" Card at the end of scroll */}
+                  <div className="min-w-[200px] flex items-center justify-center snap-start">
+                    <Link 
+                      href={`/category/${subCat.categorySlug}?sub=${subCat.slug}`}
+                      className="group flex flex-col items-center gap-4 text-primary hover:text-gold transition-colors"
+                    >
+                      <div className="w-16 h-16 rounded-full border border-beige flex items-center justify-center group-hover:border-gold transition-colors duration-500">
+                        <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
+                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Découvrir tout</span>
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
