@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Product } from "@/lib/products";
 import { CATEGORIES } from "@/lib/categories";
-import { Plus, Search, Edit3, Trash2, Filter, Archive, X, Check, Package, Layers, Info, Ruler, MapPin, Upload, Image as ImageIcon } from "lucide-react";
+import { Plus, Search, Edit3, Trash2, Filter, Archive, X, Check, Package, Layers, Info, Ruler, MapPin, Upload, Image as ImageIcon, Trash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
@@ -14,8 +14,8 @@ export default function AdminProducts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
 
@@ -42,13 +42,14 @@ export default function AdminProducts() {
       setDimL(l);
       setDimW(w);
       setDimH(h);
-      setImagePreview(editingProduct.image);
+      setImagePreviews(editingProduct.images && editingProduct.images.length > 0 ? editingProduct.images : [editingProduct.image]);
+      setImageFiles([]);
     } else {
       setDimL("");
       setDimW("");
       setDimH("");
-      setImagePreview(null);
-      setImageFile(null);
+      setImagePreviews([]);
+      setImageFiles([]);
     }
   }, [editingProduct, isModalOpen]);
 
@@ -73,16 +74,28 @@ export default function AdminProducts() {
     fetchProducts();
   }, [fetchProducts]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setImageFiles(prev => [...prev, ...files]);
+      
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const removeImage = (index: number) => {
+    const isFile = index >= (imagePreviews.length - imageFiles.length);
+    if (isFile) {
+      const fileIndex = index - (imagePreviews.length - imageFiles.length);
+      setImageFiles(prev => prev.filter((_, i) => i !== fileIndex));
+    }
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleImageUpload = async (file: File) => {
@@ -108,9 +121,19 @@ export default function AdminProducts() {
     const formData = new FormData(e.currentTarget);
     
     try {
-      let imageUrl = editingProduct?.image;
-      if (imageFile) {
-        imageUrl = await handleImageUpload(imageFile);
+      let finalImageUrls: string[] = [];
+      
+      const existingUrls = imagePreviews.filter(p => p.startsWith('http'));
+      const newUploads = await Promise.all(
+        imageFiles.map(file => handleImageUpload(file))
+      );
+
+      finalImageUrls = [...existingUrls, ...newUploads];
+
+      if (finalImageUrls.length === 0) {
+        alert("Veuillez ajouter au moins une image");
+        setLoading(false);
+        return;
       }
 
       const dimensionsStr = dimL || dimW || dimH ? `L${dimL} x P${dimW} x H${dimH} cm` : "";
@@ -122,7 +145,8 @@ export default function AdminProducts() {
         material: formData.get('material'),
         dimensions: dimensionsStr,
         weight: formData.get('weight'),
-        image: imageUrl,
+        image: finalImageUrls[0],
+        images: finalImageUrls,
         description: formData.get('description'),
       };
 
@@ -140,12 +164,13 @@ export default function AdminProducts() {
       }
 
       setIsModalOpen(false);
-      setImageFile(null);
-      fetchProducts(); // Refresh the list
+      setImageFiles([]);
+      setImagePreviews([]);
+      fetchProducts();
       alert("Produit sauvegardé avec succès");
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la sauvegarde");
+      alert("Erreur lors de la sauvegarde: " + (err as any).message);
     } finally {
       setLoading(false);
     }
@@ -434,38 +459,33 @@ export default function AdminProducts() {
 
                   <div className="space-y-6">
                     <div className="space-y-4">
-                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Visuel Haute Résolution</label>
-                      <div className="relative group">
-                        <input 
-                          type="file" 
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                        />
-                        <div className={cn(
-                          "w-full aspect-[21/9] rounded-sm border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all duration-500 overflow-hidden relative",
-                          imagePreview ? "border-gold/50" : "border-beige hover:border-gold group-hover:bg-beige/20"
-                        )}>
-                          {imagePreview ? (
-                            <>
-                              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white gap-2">
-                                <Upload size={24} />
-                                <span className="text-[10px] uppercase tracking-widest font-bold">Changer l'image</span>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="w-16 h-16 bg-beige rounded-full flex items-center justify-center text-gold group-hover:scale-110 transition-transform duration-500">
-                                <ImageIcon size={28} strokeWidth={1.5} />
-                              </div>
-                              <div className="text-center">
-                                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary mb-1">Glissez une image ici</p>
-                                <p className="text-[8px] uppercase tracking-widest text-muted-foreground">Ou cliquez pour parcourir vos fichiers</p>
-                              </div>
-                            </>
-                          )}
-                        </div>
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Galerie Photos</label>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <AnimatePresence>
+                          {imagePreviews.map((preview, index) => (
+                            <motion.div 
+                              key={index} 
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              className="relative aspect-square rounded-sm overflow-hidden border border-beige group"
+                            >
+                              <img src={preview} alt="" className="w-full h-full object-cover" />
+                              <button 
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Trash size={12} />
+                              </button>
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+                        <label className="aspect-square border-2 border-dashed border-beige hover:border-gold transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer group bg-[#FAFAFA]">
+                          <Plus className="text-gold group-hover:scale-110 transition-transform" />
+                          <span className="text-[8px] uppercase tracking-widest font-bold text-muted-foreground">Ajouter</span>
+                          <input type="file" accept="image/*" multiple onChange={handleImagesChange} className="hidden" />
+                        </label>
                       </div>
                     </div>
                     <div className="space-y-2">
