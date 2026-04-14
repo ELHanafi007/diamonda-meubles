@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Product } from "@/lib/products";
 import { CATEGORIES } from "@/lib/categories";
-import { Plus, Search, Edit3, Trash2, Filter, Archive, X, Check, Package, Layers, Info, Ruler, MapPin } from "lucide-react";
+import { Plus, Search, Edit3, Trash2, Filter, Archive, X, Check, Package, Layers, Info, Ruler, MapPin, Upload, Image as ImageIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
@@ -15,11 +15,42 @@ export default function AdminProducts() {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
+
+  // Dimension states
+  const [dimL, setDimL] = useState("");
+  const [dimW, setDimW] = useState("");
+  const [dimH, setDimH] = useState("");
   
   // Tab state: Active vs Archived
   const [activeTab, setActiveTab] = useState<'all' | 'archived'>('all');
+
+  // Helper to parse dimensions
+  const parseDimensions = (dimStr: string | undefined) => {
+    if (!dimStr) return { l: "", w: "", h: "" };
+    const l = dimStr.match(/L(\d+)/)?.[1] || "";
+    const w = dimStr.match(/[Pl](\d+)/)?.[1] || "";
+    const h = dimStr.match(/H(\d+)/)?.[1] || "";
+    return { l, w, h };
+  };
+
+  useEffect(() => {
+    if (editingProduct) {
+      const { l, w, h } = parseDimensions(editingProduct.dimensions);
+      setDimL(l);
+      setDimW(w);
+      setDimH(h);
+      setImagePreview(editingProduct.image);
+    } else {
+      setDimL("");
+      setDimW("");
+      setDimH("");
+      setImagePreview(null);
+      setImageFile(null);
+    }
+  }, [editingProduct, isModalOpen]);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -41,6 +72,18 @@ export default function AdminProducts() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleImageUpload = async (file: File) => {
     const fileExt = file.name.split('.').pop();
@@ -70,12 +113,14 @@ export default function AdminProducts() {
         imageUrl = await handleImageUpload(imageFile);
       }
 
+      const dimensionsStr = dimL || dimW || dimH ? `L${dimL} x P${dimW} x H${dimH} cm` : "";
+
       const productData = {
         name: formData.get('name'),
         price: formData.get('price'),
         category: formData.get('category'),
         material: formData.get('material'),
-        dimensions: formData.get('dimensions'),
+        dimensions: dimensionsStr,
         weight: formData.get('weight'),
         image: imageUrl,
         description: formData.get('description'),
@@ -364,28 +409,68 @@ export default function AdminProducts() {
                     <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Détails & Dimensions</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-2">
-                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Dimensions</label>
-                      <input name="dimensions" type="text" defaultValue={editingProduct?.dimensions} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="Ex: L120 x P60 x H45 cm" />
+                    <div className="space-y-4">
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1 block">Dimensions (cm)</label>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="space-y-1">
+                          <span className="text-[8px] uppercase text-muted-foreground">Longueur</span>
+                          <input type="text" value={dimL} onChange={(e) => setDimL(e.target.value)} className="w-full bg-transparent border-b border-beige py-2 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="L" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[8px] uppercase text-muted-foreground">Profondeur</span>
+                          <input type="text" value={dimW} onChange={(e) => setDimW(e.target.value)} className="w-full bg-transparent border-b border-beige py-2 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="P" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[8px] uppercase text-muted-foreground">Hauteur</span>
+                          <input type="text" value={dimH} onChange={(e) => setDimH(e.target.value)} className="w-full bg-transparent border-b border-beige py-2 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="H" />
+                        </div>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Poids</label>
-                      <input name="weight" type="text" defaultValue={editingProduct?.weight} className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="Ex: 15 kg" />
+                      <input name="weight" type="text" defaultValue={editingProduct?.weight} className="w-full bg-transparent border-b border-beige py-7 outline-none focus:border-gold transition-colors font-serif text-lg" placeholder="Ex: 15 kg" />
                     </div>
                   </div>
+
                   <div className="space-y-6">
-                    <div className="space-y-2">
-                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Image haute définition</label>
-                      <input 
-                        type="file" 
-                        accept="image/*"
-                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                        className="w-full bg-[#FAFAFA] border border-beige p-4 outline-none focus:border-gold transition-colors text-xs" 
-                      />
+                    <div className="space-y-4">
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Visuel Haute Résolution</label>
+                      <div className="relative group">
+                        <input 
+                          type="file" 
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                        />
+                        <div className={cn(
+                          "w-full aspect-[21/9] rounded-sm border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all duration-500 overflow-hidden relative",
+                          imagePreview ? "border-gold/50" : "border-beige hover:border-gold group-hover:bg-beige/20"
+                        )}>
+                          {imagePreview ? (
+                            <>
+                              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white gap-2">
+                                <Upload size={24} />
+                                <span className="text-[10px] uppercase tracking-widest font-bold">Changer l'image</span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-16 h-16 bg-beige rounded-full flex items-center justify-center text-gold group-hover:scale-110 transition-transform duration-500">
+                                <ImageIcon size={28} strokeWidth={1.5} />
+                              </div>
+                              <div className="text-center">
+                                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary mb-1">Glissez une image ici</p>
+                                <p className="text-[8px] uppercase tracking-widest text-muted-foreground">Ou cliquez pour parcourir vos fichiers</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Description éditoriale</label>
-                      <textarea name="description" rows={4} defaultValue={editingProduct?.description} className="w-full bg-[#FAFAFA] border border-beige p-4 outline-none focus:border-gold transition-colors font-light text-sm resize-none" placeholder="Décrivez l'âme de cette pièce..." />
+                      <textarea name="description" rows={4} defaultValue={editingProduct?.description} className="w-full bg-[#FAFAFA] border border-beige p-6 outline-none focus:border-gold transition-colors font-light text-sm resize-none" placeholder="Décrivez l'âme de cette pièce..." />
                     </div>
                   </div>
                 </div>
