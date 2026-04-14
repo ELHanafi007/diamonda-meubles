@@ -14,6 +14,7 @@ export default function AdminProducts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [selectedCategoryName, setSelectedCategoryName] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -44,12 +45,14 @@ export default function AdminProducts() {
       setDimH(h);
       setImagePreviews(editingProduct.images && editingProduct.images.length > 0 ? editingProduct.images : [editingProduct.image]);
       setImageFiles([]);
+      setSelectedCategoryName(editingProduct.category);
     } else {
       setDimL("");
       setDimW("");
       setDimH("");
       setImagePreviews([]);
       setImageFiles([]);
+      setSelectedCategoryName(CATEGORIES[0].name);
     }
   }, [editingProduct, isModalOpen]);
 
@@ -142,6 +145,7 @@ export default function AdminProducts() {
         name: formData.get('name'),
         price: formData.get('price'),
         category: formData.get('category'),
+        sub_category: formData.get('sub_category') || "",
         material: formData.get('material'),
         dimensions: dimensionsStr,
         weight: formData.get('weight'),
@@ -413,11 +417,29 @@ export default function AdminProducts() {
                     <Layers size={14} />
                     <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Classification & Style</span>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Catégorie</label>
-                      <select name="category" className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg appearance-none">
-                        {CATEGORIES.map(c => <option key={c.id} selected={editingProduct?.category === c.name}>{c.name}</option>)}
+                      <select 
+                        name="category" 
+                        value={selectedCategoryName}
+                        onChange={(e) => setSelectedCategoryName(e.target.value)}
+                        className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg appearance-none"
+                      >
+                        {CATEGORIES.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Sous-Catégorie</label>
+                      <select 
+                        name="sub_category" 
+                        defaultValue={editingProduct?.subCategory}
+                        className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg appearance-none"
+                      >
+                        <option value="">Sélectionner...</option>
+                        {CATEGORIES.find(c => c.name === selectedCategoryName)?.subCategories.map(s => (
+                          <option key={s.slug} value={s.name}>{s.name}</option>
+                        ))}
                       </select>
                     </div>
                     <div className="space-y-2">
