@@ -4,11 +4,60 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingBag, Search, ChevronDown, MapPin, ArrowRight } from "lucide-react";
+import { 
+  Menu, X, ShoppingBag, Search, ChevronDown, MapPin, ArrowRight,
+  Couch, Armchair, Home, Moon, Flower2, DoorOpen, Building2, User,
+  Plus, Minus
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 import { useWishlist } from "@/lib/WishlistContext";
 import { PRODUCTS } from "@/lib/products";
+
+const MOBILE_CATEGORIES = [
+  {
+    name: "Salon et réception",
+    icon: <Couch size={20} strokeWidth={1} />,
+    subCategories: [
+      "Canapés", "Consoles", "Fauteuils", "Meubles TV", "Salons", "Tables d'appoint", "Tables basses"
+    ],
+  },
+  {
+    name: "Salle à manger",
+    icon: <Armchair size={20} strokeWidth={1} />,
+    subCategories: [
+      "Tables à manger", "Chaises", "Buffets", "Bars", "Dessertes"
+    ],
+  },
+  {
+    name: "Rangement",
+    icon: <Home size={20} strokeWidth={1} />,
+    subCategories: [
+      "Bibliothèques & Séparations", "Bureaux"
+    ],
+  },
+  {
+    name: "Espace Nuit",
+    icon: <Moon size={20} strokeWidth={1} />,
+    subCategories: [
+      "Portants", "Tables de chevet", "Lits et têtes de lits"
+    ],
+  },
+  {
+    name: "Décoration",
+    icon: <Flower2 size={20} strokeWidth={1} />,
+    subCategories: [
+      "Miroirs", "Tableaux", "Vases, Bougeoirs et Plateaux", "Lampes et Luminaires", "Objets déco", "Parfum & Maison"
+    ],
+  },
+  {
+    name: "Extérieur",
+    icon: <DoorOpen size={20} strokeWidth={1} />,
+    subCategories: [
+      "Salons de jardin", "Table à manger de jardin", "Chaises d'extérieur", "Transats"
+    ],
+  },
+];
 
 const navLinks = [
   { name: "Accueil", href: "/" },
@@ -346,84 +395,94 @@ export default function Navbar() {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto px-6 py-8">
-              <div className="space-y-8">
-                {/* Primary Links */}
-                <div className="space-y-6">
-                  <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block text-3xl font-serif tracking-tight">Accueil</Link>
-                  <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="block text-3xl font-serif tracking-tight">Toutes les Collections</Link>
-                </div>
-
-                <div className="h-[1px] bg-beige w-full" />
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              <div className="space-y-6">
+                {/* Search Bar Link */}
+                <button 
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="w-full flex items-center justify-between py-4 border-b border-beige text-left group"
+                >
+                  <span className="text-xl font-serif tracking-tight group-hover:text-gold transition-colors">Chercher</span>
+                  <Search size={20} strokeWidth={1.5} className="text-gold" />
+                </button>
 
                 {/* Categories Accordion */}
-                <div className="space-y-4">
-                  <p className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold mb-6">Nos Univers</p>
-                  <div className="space-y-2">
-                    {CATEGORIES.map((cat) => (
-                      <div key={cat.id} className="border-b border-beige/50 last:border-0">
-                        <button 
-                          onClick={() => setActiveMobileTab(activeMobileTab === cat.id ? null : cat.id)}
-                          className="w-full flex items-center justify-between py-4 text-left group"
-                          aria-expanded={activeMobileTab === cat.id}
-                        >
+                <div className="space-y-1">
+                  {MOBILE_CATEGORIES.map((cat) => (
+                    <div key={cat.name} className="border-b border-beige/50 last:border-0">
+                      <button 
+                        onClick={() => setActiveMobileTab(activeMobileTab === cat.name ? null : cat.name)}
+                        className="w-full flex items-center justify-between py-5 text-left group"
+                        aria-expanded={activeMobileTab === cat.name}
+                      >
+                        <div className="flex items-center gap-4">
+                          <span className="text-gold">{cat.icon}</span>
                           <span className="text-lg font-serif tracking-tight group-hover:text-gold transition-colors">
-                            {cat.icon} <span className="ml-2">{cat.name}</span>
+                            {cat.name}
                           </span>
-                          <ChevronDown size={16} className={cn("transition-transform duration-500 text-gold", activeMobileTab === cat.id && "rotate-180")} />
-                        </button>
-                        
-                        <AnimatePresence>
-                          {activeMobileTab === cat.id && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden bg-[#FAFAFA]"
-                            >
-                              <div className="grid grid-cols-1 py-4 pl-8 space-y-3">
-                                <Link 
-                                  href={`/category/${cat.slug}`} 
+                        </div>
+                        {activeMobileTab === cat.name ? (
+                          <Minus size={18} strokeWidth={1.5} className="text-gold" />
+                        ) : (
+                          <Plus size={18} strokeWidth={1.5} className="text-gold" />
+                        )}
+                      </button>
+                      
+                      <AnimatePresence>
+                        {activeMobileTab === cat.name && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden bg-[#FBFBFB]"
+                          >
+                            <div className="flex flex-col py-4 pl-12 space-y-4">
+                              {cat.subCategories.map((sub) => (
+                                <Link
+                                  key={sub}
+                                  href={`/shop?category=${sub}`}
                                   onClick={() => setMobileMenuOpen(false)}
-                                  className="text-[11px] uppercase tracking-widest text-primary font-bold"
+                                  className="text-[13px] tracking-wide text-muted-foreground hover:text-gold transition-colors"
                                 >
-                                  Tout voir dans {cat.name}
+                                  {sub}
                                 </Link>
-                                {cat.subCategories.map((sub) => (
-                                  <Link
-                                    key={sub.slug}
-                                    href={`/category/${cat.slug}`}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-gold transition-colors"
-                                  >
-                                    {sub.name}
-                                  </Link>
-                                ))}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    ))}
-                  </div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <div className="p-8 bg-[#FAFAFA] border-t border-beige space-y-6">
-              <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                  <p className="text-[10px] uppercase tracking-widest font-bold">Showroom Rabat</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Quartier Takaddoum • 9h - 18h</p>
+            <div className="px-6 py-8 bg-[#FAFAFA] border-t border-beige space-y-1">
+              <Link 
+                href="/contact" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between py-4 group"
+              >
+                <div className="flex items-center gap-4">
+                  <Building2 size={20} strokeWidth={1} className="text-gold" />
+                  <span className="text-[13px] uppercase tracking-[0.2em] font-bold group-hover:text-gold transition-colors">Visite du Showroom</span>
                 </div>
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="p-3 bg-white border border-beige rounded-full" aria-label="Notre localisation sur Maps">
-                  <MapPin size={18} className="text-gold" />
-                </Link>
-              </div>
-              <div className="flex gap-6">
-                <span className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-primary transition-colors cursor-pointer">Instagram</span>
-                <a href="https://wa.me/212707951123" target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-primary transition-colors cursor-pointer">WhatsApp</a>
-              </div>
+                <ArrowRight size={14} className="text-gold opacity-0 group-hover:opacity-100 transition-all" />
+              </Link>
+              <Link 
+                href="/admin" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between py-4 group"
+              >
+                <div className="flex items-center gap-4">
+                  <User size={20} strokeWidth={1} className="text-gold" />
+                  <span className="text-[13px] uppercase tracking-[0.2em] font-bold group-hover:text-gold transition-colors">Connexion / Inscription</span>
+                </div>
+                <ArrowRight size={14} className="text-gold opacity-0 group-hover:opacity-100 transition-all" />
+              </Link>
             </div>
           </motion.div>
         )}
