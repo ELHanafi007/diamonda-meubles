@@ -6,9 +6,11 @@ import Image from "next/image";
 import { Plus, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TextReveal from "./TextReveal";
-import { Product, PRODUCTS } from "@/lib/products";
+import { Product } from "@/lib/products";
 import { useWishlist } from "@/lib/WishlistContext";
 import { useToast } from "@/components/ToastProvider";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 interface ProductCardProps extends Product {
   className?: string;
@@ -93,9 +95,32 @@ export function ProductCard(product: ProductCardProps) {
   );
 }
 
-const featuredProducts = PRODUCTS.filter(p => p.featured);
-
 export default function FeaturedProducts() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('featured', true)
+          .limit(4);
+        
+        if (error) throw error;
+        setFeaturedProducts(data || []);
+      } catch (err) {
+        console.error("Error fetching featured products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeatured();
+  }, []);
+
   return (
     <section className="py-24 md:py-32 bg-white px-6 border-t border-beige overflow-hidden">
       <div className="container mx-auto">
@@ -129,11 +154,22 @@ export default function FeaturedProducts() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-12 md:gap-y-20">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="py-20 flex flex-col items-center justify-center space-y-4">
+            <div className="w-12 h-12 border-4 border-beige border-t-gold rounded-full animate-spin"></div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Chargement de la sélection...</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-12 md:gap-y-20">
+            {featuredProducts.length > 0 ? featuredProducts.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            )) : (
+              <div className="col-span-full text-center py-10 italic text-muted-foreground">
+                Aucune pièce en vedette pour le moment.
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

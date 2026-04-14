@@ -1,26 +1,50 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ProductCard } from "@/components/FeaturedProducts";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, ChevronDown, LayoutGrid, List, X } from "lucide-react";
 import { CATEGORIES } from "@/lib/categories";
-import { PRODUCTS } from "@/lib/products";
+import { Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function ShopPage({ initialCategory = "Tous" }: { initialCategory?: string }) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedSubCategory, setSelectedSubCategory] = useState("Tous");
   const [selectedMaterial, setSelectedMaterial] = useState("Tous");
-  const [maxPrice, setMaxPrice] = useState<number>(50000);
+  const [maxPrice, setMaxPrice] = useState<number>(100000);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        setProducts(data || []);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const categoryNames = ["Tous", ...CATEGORIES.map(c => c.name)];
   
   const materials = useMemo(() => {
-    const allMaterials = PRODUCTS.map(p => p.material);
+    const allMaterials = products.map(p => p.material).filter(Boolean);
     return ["Tous", ...Array.from(new Set(allMaterials))];
-  }, []);
+  }, [products]);
 
   const currentCategory = useMemo(() => 
     CATEGORIES.find(c => c.name === selectedCategory),
@@ -33,16 +57,16 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
   );
 
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter(p => {
+    return products.filter(p => {
       const categoryMatch = selectedCategory === "Tous" || p.category === selectedCategory;
       const subCategoryMatch = selectedSubCategory === "Tous" || p.subCategory === selectedSubCategory;
       const materialMatch = selectedMaterial === "Tous" || p.material === selectedMaterial;
-      const priceValue = parseInt(p.price.replace(".", ""));
+      const priceValue = parseInt(p.price.replace(".", "").replace(/\s/g, ""));
       const priceMatch = priceValue <= maxPrice;
       
       return categoryMatch && subCategoryMatch && materialMatch && priceMatch;
     });
-  }, [selectedCategory, selectedSubCategory, selectedMaterial, maxPrice]);
+  }, [products, selectedCategory, selectedSubCategory, selectedMaterial, maxPrice]);
 
   return (
     <div className="pt-32 pb-24 px-6 min-h-screen bg-[#FAFAFA]">
@@ -180,7 +204,7 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
                       <input 
                         type="range" 
                         min="1000" 
-                        max="50000" 
+                        max="100000" 
                         step="1000"
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(parseInt(e.target.value))}
@@ -188,7 +212,7 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
                       />
                       <div className="flex justify-between text-[8px] uppercase tracking-widest text-muted-foreground">
                         <span>1.000 MAD</span>
-                        <span>50.000 MAD</span>
+                        <span>100.000 MAD</span>
                       </div>
                     </div>
                   </div>
@@ -198,7 +222,7 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
                       onClick={() => {
                         setSelectedSubCategory("Tous");
                         setSelectedMaterial("Tous");
-                        setMaxPrice(50000);
+                        setMaxPrice(100000);
                       }}
                       className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
                     >
@@ -211,34 +235,44 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 md:gap-x-10 md:gap-y-20">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
-        
-        {filteredProducts.length === 0 && (
-          <div className="py-32 text-center bg-white border border-beige/50 rounded-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <p className="text-primary font-serif italic text-2xl mb-4">Aucune pièce trouvée...</p>
-              <p className="text-muted-foreground text-xs uppercase tracking-widest">Essayez d'ajuster vos filtres pour trouver votre bonheur.</p>
-              <button 
-                onClick={() => { 
-                  setSelectedCategory("Tous"); 
-                  setSelectedSubCategory("Tous"); 
-                  setSelectedMaterial("Tous");
-                  setMaxPrice(50000);
-                }}
-                className="mt-8 text-gold uppercase tracking-widest text-[10px] font-bold border-b border-gold pb-1 hover:text-primary hover:border-primary transition-all"
-              >
-                Voir toutes les collections
-              </button>
-            </motion.div>
+        {/* Loading State */}
+        {loading ? (
+          <div className="py-40 flex flex-col items-center justify-center space-y-4">
+            <div className="w-12 h-12 border-4 border-beige border-t-gold rounded-full animate-spin"></div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Récupération de la collection...</p>
           </div>
+        ) : (
+          <>
+            {/* Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 md:gap-x-10 md:gap-y-20">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} {...product} />
+              ))}
+            </div>
+            
+            {filteredProducts.length === 0 && (
+              <div className="py-32 text-center bg-white border border-beige/50 rounded-sm">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <p className="text-primary font-serif italic text-2xl mb-4">Aucune pièce trouvée...</p>
+                  <p className="text-muted-foreground text-xs uppercase tracking-widest">Essayez d'ajuster vos filtres pour trouver votre bonheur.</p>
+                  <button 
+                    onClick={() => { 
+                      setSelectedCategory("Tous"); 
+                      setSelectedSubCategory("Tous"); 
+                      setSelectedMaterial("Tous");
+                      setMaxPrice(100000);
+                    }}
+                    className="mt-8 text-gold uppercase tracking-widest text-[10px] font-bold border-b border-gold pb-1 hover:text-primary hover:border-primary transition-all"
+                  >
+                    Voir toutes les collections
+                  </button>
+                </motion.div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

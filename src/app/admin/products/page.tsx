@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { PRODUCTS, Product } from "@/lib/products";
+import { useState, useEffect, useCallback } from "react";
+import { Product } from "@/lib/products";
 import { CATEGORIES } from "@/lib/categories";
 import { Plus, Search, Edit3, Trash2, Filter, Archive, X, Check, Package, Layers, Info, Ruler, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,16 +9,38 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function AdminProducts() {
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   
   // Tab state: Active vs Archived
   const [activeTab, setActiveTab] = useState<'all' | 'archived'>('all');
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      setFetchLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    } finally {
+      setFetchLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleImageUpload = async (file: File) => {
     const fileExt = file.name.split('.').pop();
@@ -74,7 +96,7 @@ export default function AdminProducts() {
 
       setIsModalOpen(false);
       setImageFile(null);
-      // Refresh local list or reload page
+      fetchProducts(); // Refresh the list
       alert("Produit sauvegardé avec succès");
     } catch (err) {
       console.error(err);
@@ -88,27 +110,53 @@ export default function AdminProducts() {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          p.category.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // In a real app, products would have an 'archived' boolean
-    // For now we'll simulate it with a mock field if it exists
     const isArchived = (p as any).status === 'archived';
     
     if (activeTab === 'archived') return matchesSearch && isArchived;
     return matchesSearch && !isArchived;
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Voulez-vous vraiment supprimer définitivement cette pièce ?")) {
-      setProducts(products.filter(p => p.id !== id));
+      try {
+        const { error } = await supabase
+          .from('products')
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+        setProducts(products.filter(p => p.id !== id));
+      } catch (err) {
+        console.error("Error deleting product:", err);
+        alert("Erreur lors de la suppression");
+      }
     }
   };
 
-  const handleArchive = (id: string) => {
-    setProducts(products.map(p => {
-      if (p.id === id) {
-        return { ...p, status: (p as any).status === 'archived' ? 'active' : 'archived' } as any;
-      }
-      return p;
-    }));
+  const handleArchive = async (id: string) => {
+    const product = products.find(p => p.id === id);
+    if (!product) return;
+
+    const newStatus = (product as any).status === 'archived' ? 'active' : 'archived';
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ status: newStatus })
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      setProducts(products.map(p => {
+        if (p.id === id) {
+          return { ...p, status: newStatus } as any;
+        }
+        return p;
+      }));
+    } catch (err) {
+      console.error("Error archiving product:", err);
+      alert("Erreur lors de la modification du statut");
+    }
   };
 
   return (
@@ -170,68 +218,75 @@ export default function AdminProducts() {
 
       {/* Product List */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <AnimatePresence mode="popLayout">
-          {filteredProducts.map((product) => (
-            <motion.div
-              key={product.id}
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white border border-beige overflow-hidden group hover:shadow-xl transition-all duration-500"
-            >
-              <div className="flex p-4 gap-4">
-                <div className="w-24 h-32 bg-beige shrink-0 overflow-hidden relative">
-                  <img src={product.image} alt="" className="w-full h-full object-cover" />
-                  {(product as any).status === 'archived' && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-2 text-center">
-                      <span className="text-[8px] text-white font-bold uppercase tracking-widest">Rupture</span>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
-                  <div className="space-y-1">
-                    <span className="text-[8px] uppercase tracking-widest text-gold font-bold">{product.category}</span>
-                    <h3 className="text-base font-serif text-primary truncate pr-2">{product.name}</h3>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest truncate">{product.material}</p>
+        {fetchLoading ? (
+          <div className="col-span-full py-20 flex flex-col items-center justify-center space-y-4">
+            <div className="w-12 h-12 border-4 border-beige border-t-gold rounded-full animate-spin"></div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Chargement du catalogue...</p>
+          </div>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filteredProducts.map((product) => (
+              <motion.div
+                key={product.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="bg-white border border-beige overflow-hidden group hover:shadow-xl transition-all duration-500"
+              >
+                <div className="flex p-4 gap-4">
+                  <div className="w-24 h-32 bg-beige shrink-0 overflow-hidden relative">
+                    <img src={product.image} alt="" className="w-full h-full object-cover" />
+                    {(product as any).status === 'archived' && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-2 text-center">
+                        <span className="text-[8px] text-white font-bold uppercase tracking-widest">Rupture</span>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center justify-between mt-auto">
-                    <p className="text-sm font-bold text-primary italic">{product.price} MAD</p>
-                    <div className="flex gap-1">
-                      <button 
-                        onClick={() => { setEditingProduct(product); setIsModalOpen(true); }}
-                        className="p-2 bg-[#FAFAFA] hover:bg-gold hover:text-white transition-colors text-muted-foreground"
-                        title="Éditer"
-                      >
-                        <Edit3 size={14} />
-                      </button>
-                      <button 
-                        onClick={() => handleArchive(product.id)}
-                        className={cn(
-                          "p-2 transition-colors",
-                          (product as any).status === 'archived' 
-                            ? "bg-green-50 text-green-600 hover:bg-green-600 hover:text-white" 
-                            : "bg-[#FAFAFA] text-muted-foreground hover:bg-amber-500 hover:text-white"
-                        )}
-                        title={(product as any).status === 'archived' ? "Remettre en stock" : "Marquer rupture"}
-                      >
-                        <Archive size={14} />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(product.id)}
-                        className="p-2 bg-[#FAFAFA] hover:bg-red-500 hover:text-white transition-colors text-muted-foreground"
-                        title="Supprimer"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                  
+                  <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
+                    <div className="space-y-1">
+                      <span className="text-[8px] uppercase tracking-widest text-gold font-bold">{product.category}</span>
+                      <h3 className="text-base font-serif text-primary truncate pr-2">{product.name}</h3>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest truncate">{product.material}</p>
+                    </div>
+                    <div className="flex items-center justify-between mt-auto">
+                      <p className="text-sm font-bold text-primary italic">{product.price} MAD</p>
+                      <div className="flex gap-1">
+                        <button 
+                          onClick={() => { setEditingProduct(product); setIsModalOpen(true); }}
+                          className="p-2 bg-[#FAFAFA] hover:bg-gold hover:text-white transition-colors text-muted-foreground"
+                          title="Éditer"
+                        >
+                          <Edit3 size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleArchive(product.id)}
+                          className={cn(
+                            "p-2 transition-colors",
+                            (product as any).status === 'archived' 
+                              ? "bg-green-50 text-green-600 hover:bg-green-600 hover:text-white" 
+                              : "bg-[#FAFAFA] text-muted-foreground hover:bg-amber-500 hover:text-white"
+                          )}
+                          title={(product as any).status === 'archived' ? "Remettre en stock" : "Marquer rupture"}
+                        >
+                          <Archive size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(product.id)}
+                          className="p-2 bg-[#FAFAFA] hover:bg-red-500 hover:text-white transition-colors text-muted-foreground"
+                          title="Supprimer"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        )}
       </div>
 
       {/* Full CRUD Modal */}

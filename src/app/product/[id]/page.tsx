@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   MessageCircle, ArrowLeft, Heart, Share2, Ruler, ShieldCheck, Truck, ShoppingBag, 
@@ -9,9 +9,10 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { ProductCard } from "@/components/FeaturedProducts";
-import { Product, PRODUCTS } from "@/lib/products";
+import { Product } from "@/lib/products";
 import { useWishlist } from "@/lib/WishlistContext";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabaseClient";
 
 // Breadcrumb Component
 function Breadcrumbs({ product }: { product: Product }) {
@@ -149,25 +150,73 @@ function ImageGallery({ images, productName }: { images: string[]; productName: 
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
-  const product = useMemo(() =>
-    PRODUCTS.find((p) => p.id === resolvedParams.id) || PRODUCTS[0],
-    [resolvedParams.id]
-  );
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const isFavorite = isInWishlist(product.id);
+  const isFavorite = product ? isInWishlist(product.id) : false;
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        setLoading(true);
+        // Fetch product
+        const { data: productData, error: productError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', resolvedParams.id)
+          .single();
+
+        if (productError) throw productError;
+        setProduct(productData);
+
+        // Fetch related products
+        if (productData) {
+          const { data: relatedData } = await supabase
+            .from('products')
+            .select('*')
+            .eq('category', productData.category)
+            .neq('id', productData.id)
+            .limit(4);
+          
+          setRelatedProducts(relatedData || []);
+        }
+      } catch (err) {
+        console.error("Error fetching product details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductData();
+  }, [resolvedParams.id]);
 
   const toggleWishlist = () => {
+    if (!product) return;
     if (isFavorite) removeFromWishlist(product.id);
     else addToWishlist(product);
   };
 
-  const relatedProducts = useMemo(() =>
-    PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4),
-    [product]
-  );
+  if (loading) {
+    return (
+      <div className="pt-64 pb-32 flex flex-col items-center justify-center space-y-4">
+        <div className="w-16 h-16 border-4 border-beige border-t-gold rounded-full animate-spin"></div>
+        <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground animate-pulse">Chargement de la pièce d'exception...</p>
+      </div>
+    );
+  }
 
-  const productImages = product.images || [product.image];
+  if (!product) {
+    return (
+      <div className="pt-64 pb-32 text-center">
+        <h1 className="text-4xl font-serif mb-8">Pièce introuvable</h1>
+        <Link href="/shop" className="text-gold uppercase tracking-widest text-xs border-b border-gold pb-1">Retour aux collections</Link>
+      </div>
+    );
+  }
+
+  const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
 
   return (
     <div className="pt-32 pb-24 px-6">
@@ -206,14 +255,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               </motion.h1>
               
               {/* Rating */}
-              {product.rating && product.reviews && (
+              {(product.rating || 0) > 0 && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
                   className="mb-6"
                 >
-                  <StarRating rating={product.rating} reviews={product.reviews} />
+                  <StarRating rating={product.rating || 0} reviews={product.reviews || 0} />
                 </motion.div>
               )}
 
