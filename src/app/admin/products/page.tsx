@@ -15,6 +15,7 @@ export default function AdminProducts() {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
+  const [selectedSubCategoryName, setSelectedSubCategoryName] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -46,6 +47,7 @@ export default function AdminProducts() {
       setImagePreviews(editingProduct.images && editingProduct.images.length > 0 ? editingProduct.images : [editingProduct.image]);
       setImageFiles([]);
       setSelectedCategoryName(editingProduct.category);
+      setSelectedSubCategoryName(editingProduct.subCategory);
     } else {
       setDimL("");
       setDimW("");
@@ -53,6 +55,7 @@ export default function AdminProducts() {
       setImagePreviews([]);
       setImageFiles([]);
       setSelectedCategoryName(CATEGORIES[0].name);
+      setSelectedSubCategoryName("");
     }
   }, [editingProduct, isModalOpen]);
 
@@ -423,7 +426,10 @@ export default function AdminProducts() {
                       <select 
                         name="category" 
                         value={selectedCategoryName}
-                        onChange={(e) => setSelectedCategoryName(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedCategoryName(e.target.value);
+                          setSelectedSubCategoryName(""); // Reset sub-category when category changes
+                        }}
                         className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg appearance-none"
                       >
                         {CATEGORIES.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
@@ -433,7 +439,8 @@ export default function AdminProducts() {
                       <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Sous-Catégorie</label>
                       <select 
                         name="sub_category" 
-                        defaultValue={editingProduct?.subCategory}
+                        value={selectedSubCategoryName}
+                        onChange={(e) => setSelectedSubCategoryName(e.target.value)}
                         className="w-full bg-transparent border-b border-beige py-3 outline-none focus:border-gold transition-colors font-serif text-lg appearance-none"
                       >
                         <option value="">Sélectionner...</option>

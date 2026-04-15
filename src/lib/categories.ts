@@ -21,7 +21,11 @@ export const CATEGORIES: Category[] = [
     icon: "🛒",
     subtitle: "Mobilité & Style",
     image: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Bar", slug: "bar" },
+      { name: "Cuisine", slug: "cuisine" },
+      { name: "Service", slug: "service" },
+    ],
   },
   {
     id: "tables-basses",
@@ -30,7 +34,12 @@ export const CATEGORIES: Category[] = [
     icon: "☕",
     subtitle: "Cœur du Salon",
     image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Marbre", slug: "marbre" },
+      { name: "Bois", slug: "bois" },
+      { name: "Verre", slug: "verre" },
+      { name: "Métal", slug: "metal" },
+    ],
   },
   {
     id: "consoles",
@@ -39,7 +48,11 @@ export const CATEGORIES: Category[] = [
     icon: "🖼️",
     subtitle: "Élégance de Passage",
     image: "https://images.unsplash.com/photo-1534349762230-e092c51f45c5?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Entrée", slug: "entree" },
+      { name: "Salon", slug: "salon" },
+      { name: "Design", slug: "design" },
+    ],
   },
   {
     id: "bibliotheques",
@@ -48,7 +61,11 @@ export const CATEGORIES: Category[] = [
     icon: "📚",
     subtitle: "Culture & Design",
     image: "https://images.unsplash.com/photo-1594620302200-9a7622d4a13c?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Murales", slug: "murales" },
+      { name: "Ouvertes", slug: "ouvertes" },
+      { name: "Fermées", slug: "fermees" },
+    ],
   },
   {
     id: "tables-a-manger",
@@ -57,7 +74,12 @@ export const CATEGORIES: Category[] = [
     icon: "🍽️",
     subtitle: "Convivialité Royale",
     image: "https://images.unsplash.com/photo-1530018607912-eff2df114f11?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Rondes", slug: "rondes" },
+      { name: "Rectangulaires", slug: "rectangulaires" },
+      { name: "Ovales", slug: "ovales" },
+      { name: "Extensibles", slug: "extensibles" },
+    ],
   },
   {
     id: "tables-d-appoint",
@@ -66,7 +88,11 @@ export const CATEGORIES: Category[] = [
     icon: "🏺",
     subtitle: "Détails Raffinés",
     image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Bouts de canapé", slug: "bouts-de-canape" },
+      { name: "Gigognes", slug: "gigognes" },
+      { name: "Piédestaux", slug: "piedestaux" },
+    ],
   },
   {
     id: "tables-de-chevet",
@@ -75,7 +101,11 @@ export const CATEGORIES: Category[] = [
     icon: "🌙",
     subtitle: "Nuits Sereines",
     image: "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Suspendues", slug: "suspendues" },
+      { name: "Avec tiroirs", slug: "tiroirs" },
+      { name: "Niches", slug: "niches" },
+    ],
   },
   {
     id: "buffets",
@@ -84,7 +114,11 @@ export const CATEGORIES: Category[] = [
     icon: "🚪",
     subtitle: "Rangement de Prestige",
     image: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Bahuts", slug: "bahuts" },
+      { name: "Enfilades", slug: "enfilades" },
+      { name: "Commodes", slug: "commodes" },
+    ],
   },
   {
     id: "meubles-tv",
@@ -93,7 +127,11 @@ export const CATEGORIES: Category[] = [
     icon: "📺",
     subtitle: "Divertissement Chic",
     image: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Muraux", slug: "muraux" },
+      { name: "Bas", slug: "bas" },
+      { name: "Bancs TV", slug: "bancs-tv" },
+    ],
   },
   {
     id: "miroirs",
@@ -102,7 +140,11 @@ export const CATEGORIES: Category[] = [
     icon: "🪞",
     subtitle: "Reflets de Luxe",
     image: "https://images.unsplash.com/photo-1513519247388-19345420d4c4?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Muraux", slug: "muraux" },
+      { name: "Sur pied", slug: "sur-pied" },
+      { name: "Ronds", slug: "ronds" },
+    ],
   },
   {
     id: "salons",
@@ -110,8 +152,13 @@ export const CATEGORIES: Category[] = [
     slug: "salons",
     icon: "🛋️",
     subtitle: "Confort Absolu",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1000",
-    subCategories: [],
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1200",
+    subCategories: [
+      { name: "Canapés", slug: "canapes" },
+      { name: "Fauteuils", slug: "fauteuils" },
+      { name: "Chaises", slug: "chaises" },
+      { name: "Poufs", slug: "poufs" },
+    ],
   },
   {
     id: "decoration",
@@ -120,6 +167,12 @@ export const CATEGORIES: Category[] = [
     icon: "✨",
     subtitle: "Détails d'Émotion",
     image: "https://images.unsplash.com/photo-1513519247388-19345420d4c4?q=80&w=1000",
-    subCategories: [],
+    subCategories: [
+      { name: "Lits", slug: "lits" },
+      { name: "Lustres", slug: "lustres" },
+      { name: "Lampes", slug: "lampes" },
+      { name: "Tapis", slug: "tapis" },
+      { name: "Bureaux", slug: "bureaux" },
+    ],
   },
 ];
