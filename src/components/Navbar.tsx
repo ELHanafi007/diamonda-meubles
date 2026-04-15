@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Menu, X, ShoppingBag, Search, ChevronDown, MapPin, ArrowRight,
   Sofa, Armchair, Home, Moon, Flower, DoorClosed, Building2, User,
-  Plus, Minus
+  Plus, Minus, LayoutGrid
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
@@ -16,45 +16,45 @@ import { PRODUCTS } from "@/lib/products";
 
 const MOBILE_CATEGORIES = [
   {
-    name: "Salon et réception",
+    name: "Salon & Réception",
     icon: <Sofa size={20} strokeWidth={1} />,
-    subCategories: [
-      "Canapés", "Consoles", "Fauteuils", "Meubles TV", "Salons", "Tables d'appoint", "Tables basses"
+    categories: [
+      { name: "Salons", slug: "salons" },
+      { name: "Tables basses", slug: "tables-basses" },
+      { name: "Meubles tv", slug: "meubles-tv" },
+      { name: "Tables d’appoint", slug: "tables-d-appoint" },
+      { name: "Consoles", slug: "consoles" },
+      { name: "Dessertes / Chariots", slug: "dessertes-chariots" }
     ],
   },
   {
     name: "Salle à manger",
     icon: <Armchair size={20} strokeWidth={1} />,
-    subCategories: [
-      "Tables à manger", "Chaises", "Buffets", "Bars", "Dessertes"
-    ],
-  },
-  {
-    name: "Rangement",
-    icon: <Home size={20} strokeWidth={1} />,
-    subCategories: [
-      "Bibliothèques & Séparations", "Bureaux"
+    categories: [
+      { name: "Tables à manger", slug: "tables-a-manger" },
+      { name: "Buffets", slug: "buffets" }
     ],
   },
   {
     name: "Espace Nuit",
     icon: <Moon size={20} strokeWidth={1} />,
-    subCategories: [
-      "Portants", "Tables de chevet", "Lits et têtes de lits"
+    categories: [
+      { name: "Tables de chevet", slug: "tables-de-chevet" }
+    ],
+  },
+  {
+    name: "Rangement",
+    icon: <Home size={20} strokeWidth={1} />,
+    categories: [
+      { name: "Bibliothèques", slug: "bibliotheques" }
     ],
   },
   {
     name: "Décoration",
     icon: <Flower size={20} strokeWidth={1} />,
-    subCategories: [
-      "Miroirs", "Tableaux", "Vases, Bougeoirs et Plateaux", "Lampes et Luminaires", "Objets déco", "Parfum & Maison"
-    ],
-  },
-  {
-    name: "Extérieur",
-    icon: <DoorClosed size={20} strokeWidth={1} />,
-    subCategories: [
-      "Salons de jardin", "Table à manger de jardin", "Chaises d'extérieur", "Transats"
+    categories: [
+      { name: "Miroirs", slug: "miroirs" },
+      { name: "Décoration", slug: "decoration" }
     ],
   },
 ];
@@ -352,17 +352,15 @@ export default function Navbar() {
                       {cat.icon} {cat.name}
                     </Link>
                     <ul className="space-y-2">
-                      {cat.subCategories.slice(0, 5).map((sub) => (
-                        <li key={sub.slug}>
-                          <Link 
-                            href={`/category/${cat.slug}`}
-                            onClick={() => setShowMegaMenu(false)}
-                            className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors"
-                          >
-                            {sub.name}
-                          </Link>
-                        </li>
-                      ))}
+                      <li key="view-all">
+                        <Link 
+                          href={`/category/${cat.slug}`}
+                          onClick={() => setShowMegaMenu(false)}
+                          className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors"
+                        >
+                          Tout voir
+                        </Link>
+                      </li>
                     </ul>
                   </motion.div>
                 ))}
@@ -411,20 +409,20 @@ export default function Navbar() {
 
                 {/* Categories Accordion */}
                 <div className="space-y-1">
-                  {MOBILE_CATEGORIES.map((cat) => (
-                    <div key={cat.name} className="border-b border-beige/50 last:border-0">
+                  {MOBILE_CATEGORIES.map((group) => (
+                    <div key={group.name} className="border-b border-beige/50 last:border-0">
                       <button 
-                        onClick={() => setActiveMobileTab(activeMobileTab === cat.name ? null : cat.name)}
+                        onClick={() => setActiveMobileTab(activeMobileTab === group.name ? null : group.name)}
                         className="w-full flex items-center justify-between py-5 text-left group"
-                        aria-expanded={activeMobileTab === cat.name}
+                        aria-expanded={activeMobileTab === group.name}
                       >
                         <div className="flex items-center gap-4">
-                          <span className="text-gold">{cat.icon}</span>
+                          <span className="text-gold">{group.icon}</span>
                           <span className="text-lg font-serif tracking-tight group-hover:text-gold transition-colors">
-                            {cat.name}
+                            {group.name}
                           </span>
                         </div>
-                        {activeMobileTab === cat.name ? (
+                        {activeMobileTab === group.name ? (
                           <Minus size={18} strokeWidth={1.5} className="text-gold" />
                         ) : (
                           <Plus size={18} strokeWidth={1.5} className="text-gold" />
@@ -432,7 +430,7 @@ export default function Navbar() {
                       </button>
                       
                       <AnimatePresence>
-                        {activeMobileTab === cat.name && (
+                        {activeMobileTab === group.name && (
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
@@ -440,14 +438,14 @@ export default function Navbar() {
                             className="overflow-hidden bg-[#FBFBFB]"
                           >
                             <div className="flex flex-col py-4 pl-12 space-y-4">
-                              {cat.subCategories.map((sub) => (
+                              {group.categories.map((cat) => (
                                 <Link
-                                  key={sub}
-                                  href={`/shop?category=${sub}`}
+                                  key={cat.slug}
+                                  href={`/category/${cat.slug}`}
                                   onClick={() => setMobileMenuOpen(false)}
                                   className="text-[13px] tracking-wide text-muted-foreground hover:text-gold transition-colors"
                                 >
-                                  {sub}
+                                  {cat.name}
                                 </Link>
                               ))}
                             </div>
@@ -456,6 +454,21 @@ export default function Navbar() {
                       </AnimatePresence>
                     </div>
                   ))}
+                  <div className="border-b border-beige/50 last:border-0">
+                    <Link
+                      href="/shop"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full flex items-center justify-between py-5 text-left group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className="text-gold"><LayoutGrid size={20} strokeWidth={1} /></span>
+                        <span className="text-lg font-serif tracking-tight group-hover:text-gold transition-colors">
+                          Toutes les Collections
+                        </span>
+                      </div>
+                      <ArrowRight size={18} strokeWidth={1.5} className="text-gold" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

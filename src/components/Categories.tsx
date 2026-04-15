@@ -8,32 +8,21 @@ import { PRODUCTS } from "@/lib/products";
 import { CATEGORIES } from "@/lib/categories";
 
 export default function Categories() {
-  // Extract all sub-categories from the CATEGORIES library
-  const ALL_SUB_CATEGORIES = CATEGORIES.flatMap(cat => 
-    cat.subCategories.map(sub => ({
-      name: sub.name,
-      filter: sub.name, // Usually p.subCategory matches sub.name
-      slug: sub.slug,
-      categorySlug: cat.slug
-    }))
-  );
-
   return (
     <section className="py-16 md:py-28 bg-white overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="space-y-24 md:space-y-32">
-          {ALL_SUB_CATEGORIES.map((subCat) => {
-            // Filter products that belong to this sub-category
-            // We use a flexible check to handle variations like "Buffets / Bahuts"
-            const subCatProducts = PRODUCTS.filter(p => 
-              p.subCategory.toLowerCase().includes(subCat.name.toLowerCase().split(' ')[0])
+          {CATEGORIES.map((cat) => {
+            // Filter products that belong to this category
+            const categoryProducts = PRODUCTS.filter(p => 
+              p.category === cat.name
             ).slice(0, 8); // Limit to 8 products per section for the home page
             
-            if (subCatProducts.length === 0) return null;
+            if (categoryProducts.length === 0) return null;
 
             return (
               <motion.div 
-                key={subCat.name} 
+                key={cat.id} 
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
@@ -44,14 +33,14 @@ export default function Categories() {
                 <div className="flex items-end justify-between border-b border-beige pb-6">
                   <div className="space-y-2">
                     <h2 className="text-3xl md:text-5xl font-serif tracking-tight text-primary">
-                      {subCat.name}
+                      {cat.name}
                     </h2>
                     <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-gold font-bold">
-                      Collection Signature
+                      {cat.subtitle || "Collection Signature"}
                     </p>
                   </div>
                   <Link 
-                    href={`/category/${subCat.categorySlug}?sub=${subCat.slug}`}
+                    href={`/category/${cat.slug}`}
                     className="flex items-center gap-3 px-6 py-3 bg-primary text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] hover:bg-gold transition-all duration-500 group"
                   >
                     Voir tout
@@ -61,7 +50,7 @@ export default function Categories() {
 
                 {/* Product Horizontal Scroll */}
                 <div className="flex overflow-x-auto gap-8 pb-8 no-scrollbar snap-x snap-mandatory -mx-6 px-6">
-                  {subCatProducts.map((product) => (
+                  {categoryProducts.map((product) => (
                     <div 
                       key={product.id}
                       className="min-w-[280px] md:min-w-[380px] flex-shrink-0 snap-start group"
@@ -120,7 +109,7 @@ export default function Categories() {
                   {/* "See More" Card at the end of scroll */}
                   <div className="min-w-[200px] flex items-center justify-center snap-start">
                     <Link 
-                      href={`/category/${subCat.categorySlug}?sub=${subCat.slug}`}
+                      href={`/category/${cat.slug}`}
                       className="group flex flex-col items-center gap-4 text-primary hover:text-gold transition-colors"
                     >
                       <div className="w-16 h-16 rounded-full border border-beige flex items-center justify-center group-hover:border-gold transition-colors duration-500">
