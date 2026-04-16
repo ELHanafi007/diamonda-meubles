@@ -17,7 +17,7 @@ export default function ConciergeModal() {
   const [selectedInquiry, setSelectedInquiry] = useState<string | null>(null);
 
   const handleWhatsAppRedirect = () => {
-    const phone = "212600000000";
+    const phone = "212707951123";
     const message = selectedInquiry 
       ? `Bonjour Diamond Meubles, je souhaite: ${inquiryTypes.find(i => i.id === selectedInquiry)?.label}`
       : "Bonjour Diamond Meubles, je souhaite avoir plus d'informations.";
