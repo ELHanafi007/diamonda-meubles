@@ -4,19 +4,30 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ShoppingCart, Sparkles } from "lucide-react";
-import { PRODUCTS } from "@/lib/products";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { CATEGORIES } from "@/lib/categories";
+import { Product } from "@/lib/products";
 
 export default function Categories() {
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data } = await supabase.from('products').select('*');
+      setAllProducts(data || []);
+    };
+    fetchProducts();
+  }, []);
+
   return (
     <section className="py-16 md:py-28 bg-white overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="space-y-24 md:space-y-32">
           {CATEGORIES.map((cat) => {
-            // Filter products that belong to this category
-            const categoryProducts = PRODUCTS.filter(p => 
+            const categoryProducts = allProducts.filter(p => 
               p.category === cat.name
-            ).slice(0, 8); // Limit to 8 products per section for the home page
+            ).slice(0, 8);
             
             return (
               <motion.div 
@@ -27,7 +38,6 @@ export default function Categories() {
                 transition={{ duration: 0.8 }}
                 className="space-y-10"
               >
-                {/* Section Header */}
                 <div className="flex items-end justify-between border-b border-beige pb-6">
                   <div className="space-y-2">
                     <h2 className="text-3xl md:text-5xl font-serif tracking-tight text-primary">
@@ -46,7 +56,6 @@ export default function Categories() {
                   </Link>
                 </div>
 
-                {/* Product Horizontal Scroll or Placeholder */}
                 {categoryProducts.length > 0 ? (
                   <div className="flex overflow-x-auto gap-8 pb-8 no-scrollbar snap-x snap-mandatory -mx-6 px-6">
                     {categoryProducts.map((product) => (
@@ -55,7 +64,6 @@ export default function Categories() {
                         className="min-w-[280px] md:min-w-[380px] flex-shrink-0 snap-start group"
                       >
                         <Link href={`/product/${product.id}`} className="block space-y-6">
-                          {/* Product Image Wrapper */}
                           <div className="relative aspect-[4/5] overflow-hidden bg-[#FDFDFD] shadow-sm">
                             <Image
                               src={product.image}
@@ -65,14 +73,12 @@ export default function Categories() {
                               sizes="(max-width: 768px) 280px, 380px"
                             />
                             
-                            {/* Discount Badge */}
                             {product.discount && (
                               <div className="absolute top-6 right-6 bg-red-600 text-white px-3 py-1.5 font-bold text-[10px] tracking-tighter">
                                 -{product.discount}%
                               </div>
                             )}
 
-                            {/* Hover Overlay */}
                             <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             
                             <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
@@ -82,7 +88,6 @@ export default function Categories() {
                             </div>
                           </div>
 
-                          {/* Product Info */}
                           <div className="space-y-3">
                             <div className="flex justify-between items-start gap-4">
                               <h3 className="text-sm md:text-lg font-serif tracking-tight text-primary leading-tight group-hover:text-gold transition-colors duration-500">
@@ -105,7 +110,6 @@ export default function Categories() {
                       </div>
                     ))}
                     
-                    {/* "See More" Card at the end of scroll */}
                     <div className="min-w-[200px] flex items-center justify-center snap-start">
                       <Link 
                         href={`/category/${cat.slug}`}
