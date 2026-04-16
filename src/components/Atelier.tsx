@@ -83,7 +83,7 @@ export default function Atelier() {
                 className="aspect-[3/4] overflow-hidden shadow-2xl"
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800" 
+                  src="/notrevision.jpeg" 
                   alt="Artisanat" 
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-105 hover:scale-100"
                 />
@@ -96,7 +96,7 @@ export default function Atelier() {
                 className="aspect-[3/4] overflow-hidden mt-12 md:mt-24 shadow-2xl"
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1541534401786-227767794823?q=80&w=800" 
+                  src="/salon.jpeg" 
                   alt="Matières" 
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-105 hover:scale-100"
                 />

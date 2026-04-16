@@ -20,7 +20,7 @@ export default function Hero() {
           aria-hidden="true"
         />
         <Image
-          src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000"
+          src="/hero.jpeg"
           alt="Luxury Living Room - Diamontaris Meubles Showroom"
           fill
           className="object-cover select-none"
