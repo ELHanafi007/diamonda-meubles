@@ -56,7 +56,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "bibliotheques",
-    name: "Bibliothèques",
+    name: "Bibliothèques et Séparations",
     slug: "bibliotheques",
     icon: "📚",
     subtitle: "Culture & Design",
@@ -65,6 +65,8 @@ export const CATEGORIES: Category[] = [
       { name: "Murales", slug: "murales" },
       { name: "Ouvertes", slug: "ouvertes" },
       { name: "Fermées", slug: "fermees" },
+      { name: "Bureaux", slug: "bureaux" },
+      { name: "Séparations", slug: "separations" },
     ],
   },
   {
@@ -79,6 +81,7 @@ export const CATEGORIES: Category[] = [
       { name: "Rectangulaires", slug: "rectangulaires" },
       { name: "Ovales", slug: "ovales" },
       { name: "Extensibles", slug: "extensibles" },
+      { name: "Chaises", slug: "chaises" },
     ],
   },
   {
@@ -173,6 +176,18 @@ export const CATEGORIES: Category[] = [
       { name: "Lampes", slug: "lampes" },
       { name: "Tapis", slug: "tapis" },
       { name: "Bureaux", slug: "bureaux" },
+      { name: "Tableaux", slug: "tableaux" },
+    ],
+  },
+  {
+    id: "espace-de-nuit",
+    name: "Espace de nuit",
+    slug: "espace-de-nuit",
+    icon: "🛏️",
+    subtitle: "Confort nocturne",
+    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1000",
+    subCategories: [
+      { name: "Têtes de lits", slug: "tetes-de-lits" },
     ],
   },
 ];
