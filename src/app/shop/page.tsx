@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { ProductCard } from "@/components/FeaturedProducts";
+import { ProductCard } from "@/components/ProductCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, ChevronDown, LayoutGrid, List, X } from "lucide-react";
 import { CATEGORIES } from "@/lib/categories";

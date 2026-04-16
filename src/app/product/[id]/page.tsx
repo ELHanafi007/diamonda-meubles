@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { ProductCard } from "@/components/FeaturedProducts";
+import { ProductCard } from "@/components/ProductCard";
+import Recommendations from "@/components/Recommendations";
 import { Product } from "@/lib/products";
 import { useWishlist } from "@/lib/WishlistContext";
 import { cn } from "@/lib/utils";
@@ -151,7 +152,6 @@ function ImageGallery({ images, productName }: { images: string[]; productName: 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const [product, setProduct] = useState<Product | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -170,18 +170,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
         if (productError) throw productError;
         setProduct(productData);
-
-        // Fetch related products
-        if (productData) {
-          const { data: relatedData } = await supabase
-            .from('products')
-            .select('*')
-            .eq('category', productData.category)
-            .neq('id', productData.id)
-            .limit(4);
-          
-          setRelatedProducts(relatedData || []);
-        }
       } catch (err) {
         console.error("Error fetching product details:", err);
       } finally {
@@ -398,18 +386,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
         </div>
 
-        {/* Related */}
-        {relatedProducts.length > 0 && (
-          <div className="pt-24 border-t border-beige">
-            <span className="text-gold uppercase tracking-[0.4em] text-[10px] mb-4 block font-bold text-center">Suggestions</span>
-            <h2 className="text-4xl md:text-5xl font-serif mb-16 text-center tracking-tight">Vous aimerez aussi</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
-              {relatedProducts.map((p) => (
-                <ProductCard key={p.id} {...p} />
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Recommendations */}
+        <Recommendations currentProduct={product} />
       </div>
     </div>
   );
