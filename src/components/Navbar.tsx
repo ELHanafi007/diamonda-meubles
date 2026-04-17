@@ -31,7 +31,7 @@ const MOBILE_CATEGORIES = [
     name: "Salle à manger",
     icon: <Armchair size={20} strokeWidth={1} />,
     categories: [
-      { name: "Tables à manger", slug: "tables-a-manger" },
+      { name: "Salle à manger", slug: "salle-a-manger" },
       { name: "Buffets", slug: "buffets" }
     ],
   },
@@ -39,6 +39,7 @@ const MOBILE_CATEGORIES = [
     name: "Espace Nuit",
     icon: <Moon size={20} strokeWidth={1} />,
     categories: [
+      { name: "Espace de nuit", slug: "espace-de-nuit" },
       { name: "Tables de chevet", slug: "tables-de-chevet" }
     ],
   },
@@ -46,7 +47,7 @@ const MOBILE_CATEGORIES = [
     name: "Rangement",
     icon: <Home size={20} strokeWidth={1} />,
     categories: [
-      { name: "Bibliothèques", slug: "bibliotheques" }
+      { name: "Rangement", slug: "rangement" }
     ],
   },
   {
