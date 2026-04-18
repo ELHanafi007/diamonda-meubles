@@ -32,7 +32,8 @@ const MOBILE_CATEGORIES = [
     icon: <Armchair size={20} strokeWidth={1} />,
     categories: [
       { name: "Salle à manger", slug: "salle-a-manger" },
-      { name: "Buffets", slug: "buffets" }
+      { name: "Buffets", slug: "buffets" },
+      { name: "Chaises", slug: "chaises" }
     ],
   },
   {
@@ -40,6 +41,7 @@ const MOBILE_CATEGORIES = [
     icon: <Moon size={20} strokeWidth={1} />,
     categories: [
       { name: "Espace de nuit", slug: "espace-de-nuit" },
+      { name: "Têtes de lits", slug: "tetes-de-lits" },
       { name: "Tables de chevet", slug: "tables-de-chevet" }
     ],
   },
@@ -47,7 +49,9 @@ const MOBILE_CATEGORIES = [
     name: "Rangement",
     icon: <Home size={20} strokeWidth={1} />,
     categories: [
-      { name: "Rangement", slug: "rangement" }
+      { name: "Rangement", slug: "rangement" },
+      { name: "Bureaux", slug: "bureaux" },
+      { name: "Bibliothèques & Séparation", slug: "bibliotheques-et-separations" }
     ],
   },
   {
@@ -55,7 +59,8 @@ const MOBILE_CATEGORIES = [
     icon: <Flower size={20} strokeWidth={1} />,
     categories: [
       { name: "Miroirs", slug: "miroirs" },
-      { name: "Décoration", slug: "decoration" }
+      { name: "Décoration", slug: "decoration" },
+      { name: "Tableaux", slug: "tableaux" }
     ],
   },
 ];
@@ -353,11 +358,22 @@ export default function Navbar() {
                       {cat.icon} {cat.name}
                     </Link>
                     <ul className="space-y-2">
-                      <li key="view-all">
+                      {cat.subCategories.slice(0, 5).map(sub => (
+                        <li key={sub.slug}>
+                          <Link 
+                            href={`/category/${cat.slug}?sub=${sub.slug}`}
+                            onClick={() => setShowMegaMenu(false)}
+                            className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors block"
+                          >
+                            {sub.name}
+                          </Link>
+                        </li>
+                      ))}
+                      <li key="view-all" className="pt-2">
                         <Link 
                           href={`/category/${cat.slug}`}
                           onClick={() => setShowMegaMenu(false)}
-                          className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors"
+                          className="text-[9px] uppercase tracking-widest text-gold font-bold transition-colors"
                         >
                           Tout voir
                         </Link>
