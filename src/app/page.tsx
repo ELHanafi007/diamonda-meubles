@@ -2,6 +2,7 @@
 
 import Hero from "@/components/Hero";
 import Categories from "@/components/Categories";
+import SignatureCollection from "@/components/SignatureCollection";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -25,6 +26,7 @@ export default function Home() {
     <>
       <Hero />
       <Categories />
+      <SignatureCollection />
       
       {/* Philosophy Section - Editorial Style */}
       <section id="philosophy" ref={philosophyRef} className="py-24 md:py-48 bg-[#FAF9F6] px-6 overflow-hidden">

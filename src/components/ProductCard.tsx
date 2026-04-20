@@ -54,14 +54,27 @@ export function ProductCard(product: ProductCardProps) {
           href={`/product/${id}`}
           className="block relative aspect-[3/4] overflow-hidden bg-beige mb-4 md:mb-8"
         >
-          {/* Subtle Image Zoom */}
+          {/* Subtle Image Zoom & Swap */}
           <Image
             src={image}
             alt={name}
             fill
-            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-108"
+            className={cn(
+              "object-cover transition-all duration-1000 ease-in-out group-hover:scale-110",
+              product.images && product.images.length > 1 && "group-hover:opacity-0"
+            )}
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
+          
+          {product.images && product.images.length > 1 && (
+            <Image
+              src={product.images[1]}
+              alt={`${name} - alternate view`}
+              fill
+              className="object-cover transition-all duration-1000 ease-in-out scale-105 group-hover:scale-110 opacity-0 group-hover:opacity-100"
+              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          )}
 
           {/* Favorite Button */}
           <button

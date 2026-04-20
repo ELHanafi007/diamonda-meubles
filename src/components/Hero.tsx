@@ -43,43 +43,47 @@ export default function Hero() {
           
           <div className="flex flex-col items-center">
             <TextReveal 
-              text="L'Élégance" 
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl text-white font-serif leading-none tracking-tight"
+              text="L'Art de Vivre" 
+              className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-white font-serif leading-tight tracking-tighter"
               delay={0.5}
             />
             <TextReveal 
-              text="Redéfinie" 
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl text-gold/90 font-serif italic font-extralight leading-none tracking-tight"
+              text="en Diamant" 
+              className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-gold/90 font-serif italic font-extralight leading-none tracking-tighter"
               delay={1}
             />
           </div>
 
           <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, delay: 2 }}
-            className="text-white/70 text-xs md:text-sm uppercase tracking-[0.3em] font-light max-w-md mx-auto leading-relaxed hidden sm:block"
+            className="text-white/60 text-[10px] md:text-xs uppercase tracking-[0.5em] font-light max-w-xl mx-auto leading-loose hidden sm:block"
           >
-            Créateur d'espaces d'exception et de moments inoubliables.
+            Créateur d'espaces d'exception où l'élégance rencontre l'artisanat.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 2.5, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8 pt-8"
+            transition={{ duration: 1.2, delay: 2.5, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-12 pt-12"
           >
             <Link 
               href="/shop"
-              className="w-full sm:w-auto bg-white text-primary px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-gold hover:text-white transition-all duration-700 ease-in-out shadow-xl text-center"
+              className="group relative w-full sm:w-auto px-16 py-6 overflow-hidden"
             >
-              La Collection
+              <div className="absolute inset-0 bg-white transition-transform duration-700 ease-out group-hover:scale-105" />
+              <span className="relative z-10 text-primary text-[10px] font-bold uppercase tracking-[0.4em] transition-colors duration-500 group-hover:text-gold">
+                La Collection
+              </span>
             </Link>
             <Link 
               href="/#philosophy"
-              className="w-full sm:w-auto border border-white/40 text-white px-12 py-5 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-white hover:text-primary transition-all duration-700 ease-in-out backdrop-blur-sm text-center"
+              className="group flex items-center gap-6 text-white text-[10px] font-bold uppercase tracking-[0.4em] transition-all duration-500"
             >
-              Nos Ambiances
+              <span>Notre Univers</span>
+              <div className="w-12 h-[1px] bg-white/30 group-hover:w-20 group-hover:bg-gold transition-all duration-700" />
             </Link>
           </motion.div>
         </div>
