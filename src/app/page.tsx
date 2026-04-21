@@ -26,7 +26,6 @@ export default function Home() {
     <>
       <Hero />
       <Categories />
-      <SignatureCollection />
       
       {/* Philosophy Section - Editorial Style */}
       <section id="philosophy" ref={philosophyRef} className="py-24 md:py-48 bg-[#FAF9F6] px-6 overflow-hidden">

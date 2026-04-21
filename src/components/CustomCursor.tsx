@@ -21,7 +21,9 @@ export default function CustomCursor() {
 
     const handleHover = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const hoverText = target.getAttribute("data-cursor");
+      const cursorElement = target.closest("[data-cursor]");
+      const hoverText = cursorElement?.getAttribute("data-cursor");
+      
       if (hoverText || target.closest("a") || target.closest("button")) {
         setIsHovering(true);
         setCursorText(hoverText || "");
