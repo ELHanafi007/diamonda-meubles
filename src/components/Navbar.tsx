@@ -69,7 +69,7 @@ const navLinks = [
   { name: "Accueil", href: "/" },
   { name: "Collections", href: "/shop", hasDropdown: true },
   { name: "L'Atelier", href: "/#atelier" },
-  { name: "Showroom", href: "/contact" },
+  { name: "Atelier", href: "/contact" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -498,7 +498,7 @@ export default function Navbar() {
               >
                 <div className="flex items-center gap-4">
                   <Building2 size={20} strokeWidth={1} className="text-gold" />
-                  <span className="text-[13px] uppercase tracking-[0.2em] font-bold group-hover:text-gold transition-colors">Visite du Showroom</span>
+                  <span className="text-[13px] uppercase tracking-[0.2em] font-bold group-hover:text-gold transition-colors">Visite de l'Atelier</span>
                 </div>
                 <ArrowRight size={14} className="text-gold opacity-0 group-hover:opacity-100 transition-all" />
               </Link>

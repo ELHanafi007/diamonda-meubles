@@ -17,8 +17,8 @@ export default function AboutPage() {
           className="absolute inset-0"
         >
           <img 
-            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1200" 
-            alt="Intérieur de luxe" 
+            src="/WhatsApp Image 2026-04-22 at 23.32.29 (3).jpeg" 
+            alt="Intérieur de luxe Diamontaris" 
             className="w-full h-full object-cover"
           />
         </motion.div>
@@ -114,7 +114,7 @@ export default function AboutPage() {
                   <div className="space-y-2">
                     <h3 className="text-sm uppercase tracking-widest font-bold">Service Conciergerie</h3>
                     <p className="text-muted-foreground font-light text-sm leading-relaxed">
-                      De la première consultation au Showroom jusqu'à l'installation prestige chez vous, nous vous accompagnons.
+                      De la première consultation à l'Atelier jusqu'à l'installation prestige chez vous, nous vous accompagnons.
                     </p>
                   </div>
                 </div>
@@ -130,8 +130,8 @@ export default function AboutPage() {
                 className="aspect-[4/5] overflow-hidden shadow-2xl relative z-10"
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800" 
-                  alt="Artisan à l'œuvre" 
+                  src="/WhatsApp Image 2026-04-22 at 23.32.29 (1).jpeg" 
+                  alt="Savoir-faire et design Diamontaris" 
                   className="w-full h-full object-cover"
                 />
               </motion.div>

@@ -29,7 +29,7 @@ export default function Footer() {
               <li><Link href="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Accueil</Link></li>
               <li><Link href="/shop" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Collections</Link></li>
               <li><Link href="/about" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Notre Histoire</Link></li>
-              <li><Link href="/contact" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Showroom</Link></li>
+              <li><Link href="/contact" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-gold transition-colors">Atelier</Link></li>
             </ul>
           </div>
 

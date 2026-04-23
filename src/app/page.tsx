@@ -40,8 +40,8 @@ export default function Home() {
             >
               <motion.img 
                 style={{ y: imgY }}
-                src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1000" 
-                alt="Luxury Interior Story" 
+                src="/WhatsApp Image 2026-04-22 at 23.32.28 (1).jpeg" 
+                alt="Intérieur signature Diamontaris" 
                 className="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-1000 scale-110"
               />
               <div className="absolute inset-0 border-[20px] border-white/10 pointer-events-none" />

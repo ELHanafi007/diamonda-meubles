@@ -65,7 +65,7 @@ export const CATEGORIES: Category[] = [
     slug: "espace-de-nuit",
     icon: "🛏️",
     subtitle: "Confort nocturne",
-    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1000",
+    image: "/WhatsApp Image 2026-04-22 at 23.32.28.jpeg",
     subCategories: [
       { name: "Têtes de lits", slug: "tetes-de-lits" },
       { name: "Lits", slug: "lits" },

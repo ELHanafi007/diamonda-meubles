@@ -21,7 +21,7 @@ export default function Showroom() {
             </motion.span>
             <div className="flex flex-col">
               <TextReveal 
-                text="Notre Showroom" 
+                text="Notre Atelier" 
                 className="text-4xl md:text-7xl font-serif leading-none tracking-tight text-white"
               />
               <TextReveal 
@@ -52,8 +52,8 @@ export default function Showroom() {
               className="relative aspect-video overflow-hidden group shadow-2xl"
             >
               <img 
-                src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200" 
-                alt="Diamontaris Meubles Showroom" 
+                src="/WhatsApp Image 2026-04-22 at 23.32.29.jpeg" 
+                alt="Diamontaris Meubles Atelier" 
                 className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />

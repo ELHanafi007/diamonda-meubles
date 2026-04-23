@@ -12,7 +12,7 @@ export default function ContactPage() {
     name: "",
     phone: "",
     date: "",
-    service: "Visite Showroom",
+    service: "Visite Atelier",
     message: ""
   });
 
@@ -87,7 +87,7 @@ export default function ContactPage() {
                   <MapPin size={20} className="text-gold" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Le Showroom</h3>
+                  <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">L'Atelier</h3>
                   <p className="text-muted-foreground font-light leading-relaxed">
                     Quartier Takaddoum, Rabat. <br />
                     Un espace de 400m² dédié à l'art de vivre d'exception.
@@ -124,7 +124,7 @@ export default function ContactPage() {
 
             <div className="p-8 bg-[#FAFAFA] border border-beige/50">
               <p className="text-xs italic font-serif text-primary/60 leading-relaxed">
-                "Chaque visite est unique. Nous préparons votre accueil avec soin pour que vous puissiez projeter votre futur intérieur dans les meilleures conditions."
+                Chaque visite est unique. Nous préparons votre accueil avec soin pour que vous puissiez projeter votre futur intérieur dans les meilleures conditions.
               </p>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function ContactPage() {
                     value={formData.service}
                     onChange={(e) => setFormData({...formData, service: e.target.value})}
                   >
-                    <option>Visite Showroom</option>
+                    <option>Visite Atelier</option>
                     <option>Conseil Déco</option>
                     <option>Projet Sur-Mesure</option>
                   </select>

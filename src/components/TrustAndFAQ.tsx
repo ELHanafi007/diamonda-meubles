@@ -47,7 +47,7 @@ const faqItems = [
   },
   {
     question: "Puis-je voir les pièces avant achat ?",
-    answer: "Notre showroom de Rabat expose une sélection de nos pièces. Sur rendez-vous, nous pouvons également organiser une visite virtuelle personnalisée."
+    answer: "Notre atelier de Rabat expose une sélection de nos pièces. Sur rendez-vous, nous pouvons également organiser une visite virtuelle personnalisée."
   }
 ];
 

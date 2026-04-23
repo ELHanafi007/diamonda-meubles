@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const inquiryTypes = [
   { id: "availability", label: "Disponibilité" },
   { id: "custom", label: "Sur Mesure" },
-  { id: "visit", label: "Visite Showroom" },
+  { id: "visit", label: "Visite Atelier" },
   { id: "catalog", label: "Catalogue" },
 ];
 
