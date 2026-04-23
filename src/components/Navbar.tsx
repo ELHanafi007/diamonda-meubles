@@ -100,7 +100,7 @@ export default function Navbar() {
         setIsSearchLoading(true);
         const { data, error } = await supabase
           .from("products")
-          .select("id, name, category, image, price")
+          .select("*")
           .order("created_at", { ascending: false });
 
         if (error) throw error;

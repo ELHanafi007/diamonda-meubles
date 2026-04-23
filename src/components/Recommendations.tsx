@@ -48,11 +48,11 @@ export default function Recommendations({ currentProduct }: RecommendationsProps
         }
 
         // 3. If still less than 4, try same sub-category
-        if (combinedResults.length < 4 && currentProduct.subCategory) {
+        if (combinedResults.length < 4 && currentProduct.sub_category) {
           const { data: subCatRelated } = await supabase
             .from('products')
             .select('*')
-            .eq('subCategory', currentProduct.subCategory)
+            .eq('sub_category', currentProduct.sub_category)
             .neq('id', currentProduct.id)
             .not('id', 'in', `(${combinedResults.map(p => p.id).join(',') || '0'})`)
             .limit(4 - combinedResults.length);

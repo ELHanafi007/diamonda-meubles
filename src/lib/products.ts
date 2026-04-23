@@ -7,7 +7,7 @@ export interface Product {
   image: string;
   images?: string[];
   category: string;
-  subCategory: string;
+  sub_category: string;
   material: string;
   description: string;
   featured?: boolean;

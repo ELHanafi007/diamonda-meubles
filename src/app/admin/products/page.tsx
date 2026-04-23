@@ -47,7 +47,7 @@ export default function AdminProducts() {
       setImagePreviews(editingProduct.images && editingProduct.images.length > 0 ? editingProduct.images : [editingProduct.image]);
       setImageFiles([]);
       setSelectedCategoryName(editingProduct.category);
-      setSelectedSubCategoryName(editingProduct.subCategory);
+      setSelectedSubCategoryName(editingProduct.sub_category);
     } else {
       setDimL("");
       setDimW("");

@@ -231,7 +231,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 animate={{ opacity: 1, x: 0 }}
                 className="text-gold uppercase tracking-[0.4em] text-[10px] mb-4 block font-bold"
               >
-                {product.category} — {product.subCategory}
+                {product.category} — {product.sub_category}
               </motion.span>
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}

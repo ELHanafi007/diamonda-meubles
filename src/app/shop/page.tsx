@@ -59,7 +59,7 @@ export default function ShopPage({ initialCategory = "Tous" }: { initialCategory
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       const categoryMatch = selectedCategory === "Tous" || p.category === selectedCategory;
-      const subCategoryMatch = selectedSubCategory === "Tous" || p.subCategory === selectedSubCategory;
+      const subCategoryMatch = selectedSubCategory === "Tous" || p.sub_category === selectedSubCategory;
       const materialMatch = selectedMaterial === "Tous" || p.material === selectedMaterial;
       const priceValue = parseInt(p.price.replace(".", "").replace(/\s/g, ""));
       const priceMatch = priceValue <= maxPrice;
