@@ -89,8 +89,7 @@ export default function ContactPage() {
                 <div className="space-y-2">
                   <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">L'Atelier</h3>
                   <p className="text-muted-foreground font-light leading-relaxed">
-                    Quartier Takaddoum, Rabat. <br />
-                    Un espace de 400m² dédié à l'art de vivre d'exception.
+                    Quartier Takaddoum, Rabat.
                   </p>
                 </div>
               </div>
@@ -120,12 +119,6 @@ export default function ContactPage() {
                   </p>
                 </div>
               </div>
-            </div>
-
-            <div className="p-8 bg-[#FAFAFA] border border-beige/50">
-              <p className="text-xs italic font-serif text-primary/60 leading-relaxed">
-                Chaque visite est unique. Nous préparons votre accueil avec soin pour que vous puissiez projeter votre futur intérieur dans les meilleures conditions.
-              </p>
             </div>
           </div>
 

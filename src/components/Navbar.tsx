@@ -12,7 +12,8 @@ import {
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 import { useWishlist } from "@/lib/WishlistContext";
-import { PRODUCTS } from "@/lib/products";
+import { Product } from "@/lib/products";
+import { supabase } from "@/lib/supabaseClient";
 
 const MOBILE_CATEGORIES = [
   {
@@ -28,10 +29,10 @@ const MOBILE_CATEGORIES = [
     ],
   },
   {
-    name: "Salle à manger",
+    name: "Tables à manger",
     icon: <Armchair size={20} strokeWidth={1} />,
     categories: [
-      { name: "Salle à manger", slug: "salle-a-manger" },
+      { name: "Tables à manger", slug: "tables-a-manger" },
       { name: "Buffets", slug: "buffets" },
       { name: "Chaises", slug: "chaises" }
     ],
@@ -40,16 +41,15 @@ const MOBILE_CATEGORIES = [
     name: "Espace Nuit",
     icon: <Moon size={20} strokeWidth={1} />,
     categories: [
-      { name: "Espace de nuit", slug: "espace-de-nuit" },
-      { name: "Têtes de lits", slug: "tetes-de-lits" },
-      { name: "Tables de chevet", slug: "tables-de-chevet" }
+      { name: "Tables de chevet", slug: "tables-de-chevet" },
+      { name: "Têtes de lits", slug: "tetes-de-lits" }
     ],
   },
   {
-    name: "Rangement",
+    name: "Bibliothèques",
     icon: <Home size={20} strokeWidth={1} />,
     categories: [
-      { name: "Rangement", slug: "rangement" },
+      { name: "Bibliothèques", slug: "bibliotheques" },
       { name: "Bureaux", slug: "bureaux" },
       { name: "Bibliothèques & Séparation", slug: "bibliotheques-et-separations" }
     ],
@@ -80,6 +80,8 @@ export default function Navbar() {
   const [activeMobileTab, setActiveMobileTab] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchableProducts, setSearchableProducts] = useState<Product[]>([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
   
   const { wishlist } = useWishlist();
   const pathname = usePathname();
@@ -92,12 +94,56 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const fetchSearchableProducts = async () => {
+      try {
+        setIsSearchLoading(true);
+        const { data, error } = await supabase
+          .from("products")
+          .select("id, name, category, image, price")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setSearchableProducts(data || []);
+      } catch (err) {
+        console.error("Error fetching searchable products:", err);
+      } finally {
+        setIsSearchLoading(false);
+      }
+    };
+
+    if (searchOpen && searchableProducts.length === 0) {
+      fetchSearchableProducts();
+    }
+  }, [searchOpen, searchableProducts.length]);
+
+  const normalizeText = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+
   const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    return PRODUCTS.filter(p => 
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchQuery.toLowerCase())
-    ).slice(0, 5);
+    const query = normalizeText(searchQuery);
+    if (!query) return [];
+
+    return searchableProducts
+      .filter((p) => {
+        const name = normalizeText(p.name || "");
+        const category = normalizeText(p.category || "");
+        return name.includes(query) || category.includes(query);
+      })
+      .slice(0, 6);
+  }, [searchQuery, searchableProducts]);
+
+  const categoryResults = useMemo(() => {
+    const query = normalizeText(searchQuery);
+    if (!query) return [];
+
+    return CATEGORIES.filter((cat) =>
+      normalizeText(cat.name).includes(query)
+    ).slice(0, 4);
   }, [searchQuery]);
 
   return (
@@ -106,12 +152,20 @@ export default function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
           isScrolled 
-            ? "bg-white/90 backdrop-blur-xl py-3 shadow-[0_2px_20px_-10px_rgba(0,0,0,0.1)]" 
-            : "bg-transparent py-8 md:py-10"
+            ? "bg-white/90 backdrop-blur-xl shadow-[0_2px_20px_-10px_rgba(0,0,0,0.1)]" 
+            : "bg-transparent"
         )}
         onMouseLeave={() => setShowMegaMenu(false)}
       >
-        <div className="container mx-auto px-6 flex items-center justify-between">
+        <div className="bg-black text-white border-b border-white/10">
+          <div className="container mx-auto px-6 py-2.5 text-center">
+            <p className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/90">
+              Ameublement clé en main
+            </p>
+          </div>
+        </div>
+
+        <div className={cn("container mx-auto px-6 flex items-center justify-between", isScrolled ? "py-3" : "py-8 md:py-10")}>
           {/* Mobile Menu Button */}
           <button
             className="lg:hidden text-primary p-2 -ml-2 transition-transform active:scale-95"
@@ -270,7 +324,20 @@ export default function Navbar() {
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground mb-8">Suggestions</p>
                     <ul className="space-y-6">
-                      {searchResults.length > 0 ? (
+                      {!searchQuery.trim() ? (
+                        ["Canapé Royal", "Table Basse Marbre", "Lit Prestige", "Lustre Cascade"].map((s) => (
+                          <li key={s}>
+                            <button 
+                              onClick={() => setSearchQuery(s)}
+                              className="text-xl md:text-3xl font-serif hover:text-gold transition-colors text-primary/60"
+                            >
+                              {s}
+                            </button>
+                          </li>
+                        ))
+                      ) : isSearchLoading ? (
+                        <li className="text-sm text-muted-foreground">Chargement des suggestions...</li>
+                      ) : searchResults.length > 0 ? (
                         searchResults.map((p) => (
                           <li key={p.id}>
                             <Link 
@@ -291,17 +358,23 @@ export default function Navbar() {
                             </Link>
                           </li>
                         ))
-                      ) : (
-                        ["Canapé Royal", "Table Basse Marbre", "Lit Prestige", "Lustre Cascade"].map((s) => (
-                          <li key={s}>
-                            <button 
-                              onClick={() => setSearchQuery(s)}
-                              className="text-xl md:text-3xl font-serif hover:text-gold transition-colors text-primary/60"
+                      ) : categoryResults.length > 0 ? (
+                        categoryResults.map((cat) => (
+                          <li key={cat.id}>
+                            <Link
+                              href={`/category/${cat.slug}`}
+                              onClick={() => setSearchOpen(false)}
+                              className="text-xl md:text-3xl font-serif hover:text-gold transition-colors text-primary/70 flex items-center justify-between"
                             >
-                              {s}
-                            </button>
+                              {cat.name}
+                              <ArrowRight size={16} className="text-gold" />
+                            </Link>
                           </li>
                         ))
+                      ) : (
+                        <li className="text-sm text-muted-foreground">
+                          Aucun résultat pour “{searchQuery}”. Essayez un autre terme.
+                        </li>
                       )}
                     </ul>
                   </div>
