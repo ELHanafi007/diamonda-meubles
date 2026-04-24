@@ -9,6 +9,7 @@ import { useWishlist } from "@/lib/WishlistContext";
 import { useToast } from "@/components/ToastProvider";
 import { cn } from "@/lib/utils";
 import Recommendations from "./Recommendations";
+import { CurrencySymbol } from "./CurrencySymbol";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -85,7 +86,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                       {product.name}
                     </h2>
                     <p className="text-2xl font-serif italic text-gold">
-                      {product.price} MAD
+                      {product.price} <CurrencySymbol />
                     </p>
                   </div>
 

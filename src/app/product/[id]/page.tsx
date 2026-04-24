@@ -14,6 +14,7 @@ import { Product } from "@/lib/products";
 import { useWishlist } from "@/lib/WishlistContext";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
+import { CurrencySymbol } from "@/components/CurrencySymbol";
 
 // Breadcrumb Component
 function Breadcrumbs({ product }: { product: Product }) {
@@ -260,7 +261,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 transition={{ delay: 0.4 }}
                 className="text-3xl font-serif italic text-gold"
               >
-                {product.price} MAD
+                {product.price} <CurrencySymbol />
               </motion.p>
             </div>
 

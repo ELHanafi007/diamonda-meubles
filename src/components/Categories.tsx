@@ -39,8 +39,6 @@ export default function Categories() {
           <div className="space-y-16">
             {CATEGORIES.map((cat, index) => {
               const categoryProducts = allProducts.filter(p => p.category === cat.name);
-              // Only show category if it has products
-              if (categoryProducts.length === 0) return null;
               
               return (
                 <CategoryCarousel 

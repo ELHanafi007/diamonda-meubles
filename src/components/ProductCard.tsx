@@ -10,6 +10,7 @@ import { useWishlist } from "@/lib/WishlistContext";
 import { useToast } from "@/components/ToastProvider";
 import { useState } from "react";
 import QuickViewModal from "./QuickViewModal";
+import { CurrencySymbol } from "./CurrencySymbol";
 
 interface ProductCardProps extends Product {
   className?: string;
@@ -93,9 +94,9 @@ export function ProductCard(product: ProductCardProps) {
           </Link>
           <div className="flex items-center justify-center gap-2">
             {oldPrice && (
-              <span className="text-xs text-muted-foreground line-through">{oldPrice} DH</span>
+              <span className="text-xs text-muted-foreground line-through">{oldPrice} <CurrencySymbol /></span>
             )}
-            <span className="text-sm font-bold text-primary">{price} DH</span>
+            <span className="text-sm font-bold text-primary">{price} <CurrencySymbol /></span>
           </div>
         </div>
       </div>

@@ -9,11 +9,17 @@ import { Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
 
-export default function ShopPage({ initialCategory = "Tous" }: { initialCategory?: string }) {
+export default function ShopPage({ 
+  initialCategory = "Tous", 
+  initialSubCategory = "Tous" 
+}: { 
+  initialCategory?: string;
+  initialSubCategory?: string;
+}) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedSubCategory, setSelectedSubCategory] = useState("Tous");
+  const [selectedSubCategory, setSelectedSubCategory] = useState(initialSubCategory);
   const [selectedMaterial, setSelectedMaterial] = useState("Tous");
   const [maxPrice, setMaxPrice] = useState<number>(100000);
   const [showFilters, setShowFilters] = useState(false);
