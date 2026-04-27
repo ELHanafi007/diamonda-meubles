@@ -7,17 +7,13 @@ interface CurrencySymbolProps {
 export const CurrencySymbol: React.FC<CurrencySymbolProps> = ({ className }) => {
   return (
     <span className={className}>
-      {/* 
-        Using the Saudi Riyal Symbol image as requested. 
-        If the image is missing, it will fallback to showing "SAR" text.
-      */}
       <img 
-        src="/Saudi_Riyal_Symbol.png" 
-        alt="SAR" 
+        src="/MAD_Symbol.png" 
+        alt="MAD" 
         className="inline-block h-[1em] w-auto align-middle"
         onError={(e) => {
           (e.target as HTMLImageElement).style.display = 'none';
-          (e.target as HTMLImageElement).parentElement!.innerText = ' SAR';
+          (e.target as HTMLImageElement).parentElement!.innerText = ' MAD';
         }}
       />
     </span>
