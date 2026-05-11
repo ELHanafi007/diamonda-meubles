@@ -72,6 +72,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
+                    unoptimized={product.image?.includes('supabase.co')}
                   />
                   <div className="absolute inset-0 bg-black/5" />
                 </div>

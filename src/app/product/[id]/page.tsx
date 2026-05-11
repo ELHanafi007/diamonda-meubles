@@ -90,6 +90,7 @@ function ImageGallery({ images, productName }: { images: string[]; productName: 
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width: 1024px) 100vw, 60vw"
               priority
+              unoptimized={images[currentIndex]?.includes('supabase.co')}
             />
           </motion.div>
         </AnimatePresence>
@@ -141,6 +142,7 @@ function ImageGallery({ images, productName }: { images: string[]; productName: 
                 width={150}
                 height={150}
                 className="w-full h-full object-cover"
+                unoptimized={img?.includes('supabase.co')}
               />
             </button>
           ))}
