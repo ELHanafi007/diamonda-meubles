@@ -90,7 +90,11 @@ function ImageGallery({ images, productName }: { images: string[]; productName: 
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width: 1024px) 100vw, 60vw"
               priority
-              unoptimized={images[currentIndex]?.includes('supabase.co')}
+              unoptimized={images[currentIndex]?.includes('supabase.co') || !images[currentIndex]?.startsWith('http')}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/tabledebasse.jpeg';
+              }}
             />
           </motion.div>
         </AnimatePresence>

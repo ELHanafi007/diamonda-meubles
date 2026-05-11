@@ -72,7 +72,11 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    unoptimized={product.image?.includes('supabase.co')}
+                    unoptimized={product.image?.includes('supabase.co') || !product.image?.startsWith('http')}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/tabledebasse.jpeg';
+                    }}
                   />
                   <div className="absolute inset-0 bg-black/5" />
                 </div>

@@ -136,7 +136,10 @@ export default function AdminProducts() {
     try {
       let finalImageUrls: string[] = [];
       
-      const existingUrls = imagePreviews.filter(p => p.startsWith('http') || p.startsWith('/'));
+      const existingUrls = imagePreviews
+        .filter(p => (p.trim().startsWith('http') || p.trim().startsWith('/')) && !p.startsWith('data:'))
+        .map(p => p.trim());
+        
       const newUploads = await Promise.all(
         imageFiles.map(file => handleImageUpload(file))
       );
@@ -326,7 +329,14 @@ export default function AdminProducts() {
               >
                 <div className="flex p-4 gap-4">
                   <div className="w-24 h-32 bg-beige shrink-0 overflow-hidden relative">
-                    <img src={product.image} alt="" className="w-full h-full object-cover" />
+                    <img 
+                      src={product.image} 
+                      alt="" 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/tabledebasse.jpeg';
+                      }}
+                    />
                     {(product as any).status === 'archived' && (
                       <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-2 text-center">
                         <span className="text-[8px] text-white font-bold uppercase tracking-widest">Rupture</span>
@@ -512,7 +522,14 @@ export default function AdminProducts() {
                               exit={{ opacity: 0, scale: 0.8 }}
                               className="relative aspect-square rounded-sm overflow-hidden border border-beige group"
                             >
-                              <img src={preview} alt="" className="w-full h-full object-cover" />
+                              <img 
+                                src={preview} 
+                                alt="" 
+                                className="w-full h-full object-cover" 
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src = '/tabledebasse.jpeg';
+                                }}
+                              />
                               <button 
                                 type="button"
                                 onClick={() => removeImage(index)}
