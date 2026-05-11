@@ -54,7 +54,7 @@ export default function AdminProducts() {
       setDimH("");
       setImagePreviews([]);
       setImageFiles([]);
-      setSelectedCategoryName(CATEGORIES[0].name);
+      setSelectedCategoryName(CATEGORIES[0]?.name || "");
       setSelectedSubCategoryName("");
     }
   }, [editingProduct, isModalOpen]);
@@ -106,17 +106,24 @@ export default function AdminProducts() {
 
   const handleImageUpload = async (file: File) => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}.${fileExt}`;
+    const filePath = fileName;
     
     const { data, error } = await supabase.storage
       .from('product_images')
-      .upload(fileName, file);
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Storage upload error:", error);
+      throw new Error(`Erreur d'upload: ${error.message}`);
+    }
     
     const { data: publicUrlData } = supabase.storage
       .from('product_images')
-      .getPublicUrl(fileName);
+      .getPublicUrl(filePath);
       
     return publicUrlData.publicUrl;
   };
@@ -129,7 +136,7 @@ export default function AdminProducts() {
     try {
       let finalImageUrls: string[] = [];
       
-      const existingUrls = imagePreviews.filter(p => p.startsWith('http'));
+      const existingUrls = imagePreviews.filter(p => p.startsWith('http') || p.startsWith('/'));
       const newUploads = await Promise.all(
         imageFiles.map(file => handleImageUpload(file))
       );
@@ -145,17 +152,23 @@ export default function AdminProducts() {
       const dimensionsStr = dimL || dimW || dimH ? `L${dimL} x P${dimW} x H${dimH} cm` : "";
 
       const productData = {
-        name: formData.get('name'),
-        price: formData.get('price'),
-        category: formData.get('category'),
-        sub_category: formData.get('sub_category') || "",
-        material: formData.get('material'),
+        name: String(formData.get('name') || ""),
+        price: String(formData.get('price') || ""),
+        category: String(formData.get('category') || ""),
+        sub_category: String(formData.get('sub_category') || ""),
+        material: String(formData.get('material') || ""),
         dimensions: dimensionsStr,
-        weight: formData.get('weight'),
+        weight: String(formData.get('weight') || ""),
         image: finalImageUrls[0],
         images: finalImageUrls,
-        description: formData.get('description'),
+        description: String(formData.get('description') || ""),
       };
+
+      if (!productData.name || !productData.price) {
+        alert("Le nom et le prix sont obligatoires");
+        setLoading(false);
+        return;
+      }
 
       if (editingProduct) {
         const { error } = await supabase
@@ -175,9 +188,9 @@ export default function AdminProducts() {
       setImagePreviews([]);
       fetchProducts();
       alert("Produit sauvegardé avec succès");
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de la sauvegarde: " + (err as any).message);
+    } catch (err: any) {
+      console.error("Save error:", err);
+      alert("Erreur lors de la sauvegarde: " + (err.message || "Erreur inconnue"));
     } finally {
       setLoading(false);
     }
